@@ -8,6 +8,11 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
 public class MessageListener extends ListenerAdapter {
 
+    private Bot bot;
+    public MessageListener(Bot bot) {
+        this.bot = bot;
+    }
+
     @Override
     public void onMessageReceived(MessageReceivedEvent e) {
         if(!e.getAuthor().getId().equalsIgnoreCase(e.getJDA().getSelfUser().getId())) {
@@ -23,7 +28,7 @@ public class MessageListener extends ListenerAdapter {
             return;
         }
 
-        //TODO execute command
+        bot.getCommandHandler().executeCommand(e);
     }
 
     private void edit(Message message, String search, String value) {

@@ -1,6 +1,9 @@
 package me.bramhaag.discordselfbot;
 
+import lombok.Getter;
 import lombok.NonNull;
+import me.bramhaag.discordselfbot.commands.CommandPing;
+import me.bramhaag.discordselfbot.commands.base.CommandHandler;
 import me.bramhaag.discordselfbot.listeners.MessageListener;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
@@ -13,18 +16,23 @@ public class Bot {
 
     public static final String PREFIX = "::";
 
+    @Getter
     private JDA jda;
+
+    @Getter
+    private CommandHandler commandHandler;
 
     Bot(@NonNull String token) {
         try {
-            jda = new JDABuilder(AccountType.CLIENT).setToken(token).setAutoReconnect(true).buildBlocking();
+            this.jda = new JDABuilder(AccountType.CLIENT).setToken(token).setAutoReconnect(true).buildBlocking();
         } catch (LoginException | InterruptedException | RateLimitedException e) {
             e.printStackTrace();
             System.exit(0);
         }
 
-        jda.addEventListener(new MessageListener());
+        this.jda.addEventListener(new MessageListener(this));
+        this.commandHandler = new CommandHandler();
+
+        this.commandHandler.register(new CommandPing());
     }
-
-
 }

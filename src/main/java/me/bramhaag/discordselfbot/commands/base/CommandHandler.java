@@ -2,6 +2,7 @@ package me.bramhaag.discordselfbot.commands.base;
 
 import lombok.NonNull;
 import me.bramhaag.discordselfbot.Bot;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 import java.lang.reflect.InvocationTargetException;
@@ -24,11 +25,13 @@ public class CommandHandler {
     }
 
     public void executeCommand(@NonNull MessageReceivedEvent event) {
-        String content = event.getMessage().getRawContent();
+        Message message = event.getMessage();
+
+        String content = message.getRawContent();
         String[] parts = content.split(" ");
 
         String name = parts[0].substring(Bot.PREFIX.length()).trim();
-        String[] args = new String[parts.length - 2];
+        String[] args = new String[parts.length - 1];
 
         for(int i = 1; i < parts.length; i++) {
             args[i - 1] = parts[i].trim();
@@ -44,7 +47,10 @@ public class CommandHandler {
             }
 
             try {
-                data.getMethod().invoke(data.getExecutor(), event, args);
+                Message output = (Message) data.getMethod().invoke(data.getExecutor(), message, args);
+
+                if(output == null) return;
+                message.editMessage(output).queue();
             } catch (IllegalAccessException | InvocationTargetException e) {
                 //TODO handle exception
                 e.printStackTrace();
