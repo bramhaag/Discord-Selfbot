@@ -1,8 +1,10 @@
 package me.bramhaag.discordselfbot.commands.base;
 
 import lombok.NonNull;
+import me.bramhaag.discordselfbot.Bot;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 public class CommandHandler {
@@ -14,7 +16,7 @@ public class CommandHandler {
             if(!method.isAnnotationPresent(Command.class)) return;
 
             Command info = method.getAnnotation(Command.class);
-            CommandData commandData = new CommandData(method, object);
+            CommandData commandData = new CommandData(method, info, object);
 
             commands.put(info.name(), commandData);
             Arrays.stream(info.aliases()).forEach(alias -> commands.put(alias, commandData));
@@ -22,6 +24,31 @@ public class CommandHandler {
     }
 
     public void executeCommand(@NonNull MessageReceivedEvent event) {
+        String content = event.getMessage().getRawContent();
+        String[] parts = content.split(" ");
 
+        String name = parts[0].substring(Bot.PREFIX.length()).trim();
+        String[] args = new String[parts.length - 2];
+
+        for(int i = 1; i < parts.length; i++) {
+            args[i - 1] = parts[i].trim();
+        }
+
+        commands.forEach((command, data) -> {
+            if (!name.equalsIgnoreCase(command)) return;
+
+            Command info = data.getAnnotation();
+            if (info.minArgs() != -1 && info.minArgs() < args.length) {
+                //TODO do something
+                return;
+            }
+
+            try {
+                data.getMethod().invoke(data.getExecutor(), event, args);
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                //TODO handle exception
+                e.printStackTrace();
+            }
+        });
     }
 }
