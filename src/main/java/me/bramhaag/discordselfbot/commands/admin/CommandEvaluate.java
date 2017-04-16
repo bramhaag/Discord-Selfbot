@@ -74,7 +74,7 @@ public class CommandEvaluate {
                 //                                    .build().getRawContent())
                 .addField("Input",  new MessageBuilder().appendCodeBlock(input, "javascript").build().getRawContent(), true)
                 .addField("Output", new MessageBuilder().appendCodeBlock(output, "javascript").build().getRawContent(), true)
-                .setFooter(time == 0 ? "An error occurred" : String.format("Evaluation took %d ms (%d ns) to complete", (long)Math.floor(time / 1000000), time), null)
+                .setFooter(time == 0 ? Constants.CROSS_EMOTE + " An error occurred" : String.format(Constants.CHECK_EMOTE + " Evaluation took %d ms (%d ns) to complete", (long)Math.floor(time / 1000000), time), null)
                 .setColor(color)
                 .build()).queue();
     }
