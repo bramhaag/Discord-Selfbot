@@ -5,6 +5,7 @@ import lombok.NonNull;
 import me.bramhaag.discordselfbot.commands.CommandEmbed;
 import me.bramhaag.discordselfbot.commands.CommandEvaluate;
 import me.bramhaag.discordselfbot.commands.CommandPing;
+import me.bramhaag.discordselfbot.commands.CommandTimer;
 import me.bramhaag.discordselfbot.commands.base.CommandHandler;
 import me.bramhaag.discordselfbot.listeners.MessageListener;
 import net.dv8tion.jda.core.AccountType;
@@ -38,7 +39,8 @@ public class Bot {
         this.commandHandler.register(
                 new CommandEmbed(),
                 new CommandEvaluate(),
-                new CommandPing()
+                new CommandPing(),
+                new CommandTimer()
         );
     }
 }

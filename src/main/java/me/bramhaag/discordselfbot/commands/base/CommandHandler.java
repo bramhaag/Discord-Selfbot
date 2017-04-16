@@ -2,6 +2,7 @@ package me.bramhaag.discordselfbot.commands.base;
 
 import lombok.NonNull;
 import me.bramhaag.discordselfbot.Bot;
+import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Channel;
 import net.dv8tion.jda.core.entities.Message;
@@ -15,10 +16,18 @@ public class CommandHandler {
 
     private Map<String, CommandData> commands = new HashMap<>();
 
+    /**
+     * Register commands
+     * @param objects Command classes to register
+     */
     public void register(@NonNull Object... objects) {
         Arrays.stream(objects).forEach(this::register);
     }
 
+    /**
+     * Register a single command
+     * @param object Command to register
+     */
     private void register(@NonNull Object object) {
         Arrays.stream(object.getClass().getMethods()).forEach(method -> {
             if(!method.isAnnotationPresent(Command.class)) return;
@@ -31,6 +40,10 @@ public class CommandHandler {
         });
     }
 
+    /**
+     * Execute command from a {@link MessageReceivedEvent}
+     * @param event Event which contains all data for the command
+     */
     public void executeCommand(@NonNull MessageReceivedEvent event) {
         Message message = event.getMessage();
 
@@ -49,15 +62,16 @@ public class CommandHandler {
 
             Command info = data.getAnnotation();
             if (info.minArgs() != -1 && info.minArgs() < args.length) {
-                //TODO do something
+                message.editMessage(new MessageBuilder().appendCodeBlock("An error occurred while executing command! Not enough arguments!", "javascript").build());
                 return;
             }
 
             try {
                 Object output = data.getMethod().invoke(data.getExecutor(), message, args);
 
-                if(output == null)
+                if(output == null) {
                     return;
+                }
 
                 if(output instanceof Message) {
                     message.editMessage((Message) output).queue();
@@ -66,6 +80,7 @@ public class CommandHandler {
 
                 if(output instanceof MessageEmbed) {
                     MessageEmbed messageEmbed = (MessageEmbed) output;
+
                     if(message.getGuild().getMember(message.getAuthor()).hasPermission((Channel)message.getChannel(), Permission.MESSAGE_EMBED_LINKS))
                         message.editMessage(messageEmbed).queue();
                     else
