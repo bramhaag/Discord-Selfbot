@@ -3,6 +3,7 @@ package me.bramhaag.discordselfbot.commands.base;
 import lombok.NonNull;
 import me.bramhaag.discordselfbot.Bot;
 import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.entities.MessageEmbed;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 import java.lang.reflect.InvocationTargetException;
@@ -51,10 +52,19 @@ public class CommandHandler {
             }
 
             try {
-                Message output = (Message) data.getMethod().invoke(data.getExecutor(), message, args);
+                Object output = data.getMethod().invoke(data.getExecutor(), message, args);
 
-                if(output == null) return;
-                message.editMessage(output).queue();
+                if(output == null)
+                    return;
+
+                if(output instanceof Message) {
+                    message.editMessage((Message) output).queue();
+                    return;
+                }
+
+                if(output instanceof MessageEmbed) {
+                    message.editMessage((MessageEmbed) output).queue();
+                }
             } catch (IllegalAccessException | InvocationTargetException e) {
                 //TODO handle exception
                 e.printStackTrace();
