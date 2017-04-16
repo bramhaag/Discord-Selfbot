@@ -2,8 +2,13 @@ package me.bramhaag.discordselfbot;
 
 import lombok.Getter;
 import lombok.NonNull;
-import me.bramhaag.discordselfbot.commands.*;
-import me.bramhaag.discordselfbot.commands.base.CommandHandler;
+import me.bramhaag.discordselfbot.commands.admin.CommandEvaluate;
+import me.bramhaag.discordselfbot.commands.admin.CommandPing;
+import me.bramhaag.discordselfbot.commands.admin.CommandPrune;
+import me.bramhaag.discordselfbot.commands.admin.CommandReload;
+import me.bramhaag.discordselfbot.commands.CommandHandler;
+import me.bramhaag.discordselfbot.commands.fun.CommandEmbed;
+import me.bramhaag.discordselfbot.commands.util.*;
 import me.bramhaag.discordselfbot.listeners.MessageListener;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;

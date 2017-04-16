@@ -1,8 +1,8 @@
-package me.bramhaag.discordselfbot.commands;
+package me.bramhaag.discordselfbot.commands.admin;
 
 import me.bramhaag.discordselfbot.Constants;
 import me.bramhaag.discordselfbot.util.Util;
-import me.bramhaag.discordselfbot.commands.base.Command;
+import me.bramhaag.discordselfbot.commands.Command;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;

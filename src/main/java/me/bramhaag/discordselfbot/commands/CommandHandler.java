@@ -1,13 +1,10 @@
-package me.bramhaag.discordselfbot.commands.base;
+package me.bramhaag.discordselfbot.commands;
 
 import lombok.NonNull;
 import me.bramhaag.discordselfbot.Bot;
 import me.bramhaag.discordselfbot.util.BreakException;
 import net.dv8tion.jda.core.MessageBuilder;
-import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.Channel;
 import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.MessageEmbed;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 import java.lang.reflect.InvocationTargetException;
@@ -48,6 +45,8 @@ public class CommandHandler {
     /**
      * Execute command from a {@link MessageReceivedEvent}
      * @param event Event which contains all data for the command
+     *
+     * @throws BreakException when command is found
      */
     public void executeCommand(@NonNull MessageReceivedEvent event) {
         Message message = event.getMessage();

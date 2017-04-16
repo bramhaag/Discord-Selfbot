@@ -1,4 +1,4 @@
-package me.bramhaag.discordselfbot.commands.base;
+package me.bramhaag.discordselfbot.commands;
 
 import lombok.Data;
 import lombok.NonNull;
