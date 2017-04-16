@@ -2,6 +2,8 @@ package me.bramhaag.discordselfbot.commands.base;
 
 import lombok.NonNull;
 import me.bramhaag.discordselfbot.Bot;
+import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.core.entities.Channel;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageEmbed;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
@@ -63,7 +65,11 @@ public class CommandHandler {
                 }
 
                 if(output instanceof MessageEmbed) {
-                    message.editMessage((MessageEmbed) output).queue();
+                    MessageEmbed messageEmbed = (MessageEmbed) output;
+                    if(message.getGuild().getMember(message.getAuthor()).hasPermission((Channel)message.getChannel(), Permission.MESSAGE_EMBED_LINKS))
+                        message.editMessage(messageEmbed).queue();
+                    else
+                        message.editMessage(messageEmbed.getDescription()).queue();
                 }
             } catch (IllegalAccessException | InvocationTargetException e) {
                 //TODO handle exception
