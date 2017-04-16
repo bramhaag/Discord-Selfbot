@@ -7,29 +7,27 @@ import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageEmbed;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import java.awt.*;
-import java.util.Arrays;
 
 public class CommandEvaluate {
 
     private ScriptEngineManager factory;
     private ScriptEngine engine;
 
-    private String imports;
-
     public CommandEvaluate() {
         factory = new ScriptEngineManager();
         engine = factory.getEngineByName("nashorn");
 
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("load(\"nashorn:mozilla_compat.js\");\n");
-        Arrays.stream(Constants.EVAL_IMPORTS).forEach(s -> stringBuilder.append("importPackage(").append(s).append(")\n"));
-        stringBuilder.append("\n");
-        imports = stringBuilder.toString();
+        try {
+            engine.eval(String.format("var imports = new JavaImporter(%s);", StringUtils.join(Constants.EVAL_IMPORTS, ',')));
+        } catch (ScriptException e) {
+            e.printStackTrace();
+        }
     }
 
     @Command(name = "evaluate", aliases = { "eval", "e" })
@@ -48,17 +46,17 @@ public class CommandEvaluate {
         String input = Util.combineArgs(args);
         String output;
 
-        boolean success;
+        Color color;
 
         try {
-            Object rawOutput = engine.eval(imports + input);
+            Object rawOutput = engine.eval(String.format("with (imports) { %s }", input));
             output = rawOutput == null ? "null" : rawOutput.toString();
 
-            success = true;
+            color = Color.GREEN;
         } catch (ScriptException e) {
             output = e.getMessage();
 
-            success = false;
+            color = Color.RED;
         }
 
         return new EmbedBuilder()
@@ -68,7 +66,7 @@ public class CommandEvaluate {
                                                     .append("Output:\n")
                                                     .appendCodeBlock(output, "javascript")
                                 .build().getRawContent())
-                .setColor(success ? Color.GREEN : Color.RED)
+                .setColor(color)
         .build();
     }
 }

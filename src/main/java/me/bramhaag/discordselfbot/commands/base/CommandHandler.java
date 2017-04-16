@@ -40,6 +40,10 @@ public class CommandHandler {
         });
     }
 
+    public void unregister() {
+        commands.clear();
+    }
+
     /**
      * Execute command from a {@link MessageReceivedEvent}
      * @param event Event which contains all data for the command

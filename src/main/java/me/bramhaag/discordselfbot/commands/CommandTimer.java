@@ -8,7 +8,6 @@ import net.dv8tion.jda.core.entities.MessageEmbed;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 
 import java.awt.*;
-import java.util.Timer;
 
 public class CommandTimer {
 
@@ -21,7 +20,7 @@ public class CommandTimer {
             delay = Long.valueOf(args[0]);
         }
         catch (NumberFormatException e) {
-            Util.editMessageError(message, e.getMessage());
+            Util.editMessageError(message, e.toString());
             return null;
         }
 

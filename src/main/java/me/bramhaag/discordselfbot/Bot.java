@@ -2,10 +2,7 @@ package me.bramhaag.discordselfbot;
 
 import lombok.Getter;
 import lombok.NonNull;
-import me.bramhaag.discordselfbot.commands.CommandEmbed;
-import me.bramhaag.discordselfbot.commands.CommandEvaluate;
-import me.bramhaag.discordselfbot.commands.CommandPing;
-import me.bramhaag.discordselfbot.commands.CommandTimer;
+import me.bramhaag.discordselfbot.commands.*;
 import me.bramhaag.discordselfbot.commands.base.CommandHandler;
 import me.bramhaag.discordselfbot.listeners.MessageListener;
 import net.dv8tion.jda.core.AccountType;
@@ -36,10 +33,16 @@ public class Bot {
         this.jda.addEventListener(new MessageListener(this));
         this.commandHandler = new CommandHandler();
 
+        registerCommands();
+    }
+
+    public void registerCommands() {
         this.commandHandler.register(
                 new CommandEmbed(),
                 new CommandEvaluate(),
                 new CommandPing(),
+                new CommandPrune(),
+                new CommandReload(),
                 new CommandTimer()
         );
     }
