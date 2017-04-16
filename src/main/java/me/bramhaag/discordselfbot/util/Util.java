@@ -1,4 +1,4 @@
-package me.bramhaag.discordselfbot;
+package me.bramhaag.discordselfbot.util;
 
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.Permission;

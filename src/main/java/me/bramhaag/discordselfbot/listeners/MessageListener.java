@@ -2,6 +2,7 @@ package me.bramhaag.discordselfbot.listeners;
 
 import me.bramhaag.discordselfbot.Bot;
 import me.bramhaag.discordselfbot.Constants;
+import me.bramhaag.discordselfbot.util.BreakException;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
@@ -28,7 +29,11 @@ public class MessageListener extends ListenerAdapter {
             return;
         }
 
-        bot.getCommandHandler().executeCommand(e);
+        try {
+            bot.getCommandHandler().executeCommand(e);
+        } catch (BreakException ex) {
+            //Ignore
+        }
     }
 
     private void edit(Message message, String search, String value) {

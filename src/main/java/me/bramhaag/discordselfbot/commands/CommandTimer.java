@@ -1,19 +1,18 @@
 package me.bramhaag.discordselfbot.commands;
 
-import me.bramhaag.discordselfbot.Util;
+import me.bramhaag.discordselfbot.util.Util;
 import me.bramhaag.discordselfbot.commands.base.Command;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.MessageEmbed;
+import net.dv8tion.jda.core.entities.TextChannel;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 
 import java.awt.*;
 
 public class CommandTimer {
 
-    @Command(name = "timer", minArgs = 2)
-    public MessageEmbed execute(Message message, String[] args) {
-
+    @Command(name = "timer", minArgs = 1)
+    public void execute(Message message, TextChannel channel, String[] args) {
         long delay;
 
         try {
@@ -21,7 +20,7 @@ public class CommandTimer {
         }
         catch (NumberFormatException e) {
             Util.editMessageError(message, e.toString());
-            return null;
+            return;
         }
 
         Util.editEmbed(message, new EmbedBuilder()
@@ -31,6 +30,5 @@ public class CommandTimer {
         .build());
 
         Util.sendEmbedAfter(new EmbedBuilder().setTitle("Timer", null).setDescription("Timer expired!").setColor(Color.GREEN).build(), message.getTextChannel(), message.getAuthor(), delay);
-        return null;
     }
 }

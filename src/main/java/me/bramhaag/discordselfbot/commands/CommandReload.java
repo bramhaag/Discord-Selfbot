@@ -4,14 +4,15 @@ import me.bramhaag.discordselfbot.Main;
 import me.bramhaag.discordselfbot.commands.base.Command;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.entities.TextChannel;
 
 public class CommandReload {
 
     @Command(name = "reload")
-    public Message execute(Message message, String[] args) {
+    public void execute(Message message, TextChannel channel, String[] args) {
         Main.bot.getCommandHandler().unregister();
         Main.bot.registerCommands();
 
-        return new MessageBuilder().appendCodeBlock("Reloaded!", "").build();
+        channel.sendMessage(new MessageBuilder().appendCodeBlock("Reloaded!", "").build()).queue();
     }
 }

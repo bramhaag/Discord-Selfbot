@@ -1,12 +1,12 @@
 package me.bramhaag.discordselfbot.commands;
 
 import me.bramhaag.discordselfbot.Constants;
-import me.bramhaag.discordselfbot.Util;
+import me.bramhaag.discordselfbot.util.Util;
 import me.bramhaag.discordselfbot.commands.base.Command;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.MessageEmbed;
+import net.dv8tion.jda.core.entities.TextChannel;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.script.ScriptEngine;
@@ -31,7 +31,7 @@ public class CommandEvaluate {
     }
 
     @Command(name = "evaluate", aliases = { "eval", "e" })
-    public MessageEmbed execute(Message message, String[] args) {
+    public void execute(Message message, TextChannel channel, String[] args) {
         engine.put("jda", message.getJDA());
 
         engine.put("channel", message.getChannel());
@@ -59,14 +59,14 @@ public class CommandEvaluate {
             color = Color.RED;
         }
 
-        return new EmbedBuilder()
+        channel.sendMessage(new EmbedBuilder()
                 .setTitle("Evaluate", null)
                 .setDescription(new MessageBuilder().append("Input:\n")
                                                     .appendCodeBlock(input, "javascript")
                                                     .append("Output:\n")
                                                     .appendCodeBlock(output, "javascript")
-                                .build().getRawContent())
+                                                    .build().getRawContent())
                 .setColor(color)
-        .build();
+                .build()).queue();
     }
 }

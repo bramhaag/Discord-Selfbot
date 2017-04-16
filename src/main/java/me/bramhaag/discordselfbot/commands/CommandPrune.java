@@ -1,17 +1,17 @@
 package me.bramhaag.discordselfbot.commands;
 
-import me.bramhaag.discordselfbot.Util;
+import me.bramhaag.discordselfbot.util.Util;
 import me.bramhaag.discordselfbot.commands.base.Command;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageHistory;
+import net.dv8tion.jda.core.entities.TextChannel;
 
 import java.util.stream.Collectors;
 
 public class CommandPrune {
 
     @Command(name = "prune", aliases = { "purge" }, minArgs = 1)
-    public Message execute(Message message, String[] args) {
-
+    public void execute(Message message, TextChannel channel, String[] args) {
         int amount;
 
         try {
@@ -19,7 +19,7 @@ public class CommandPrune {
         }
         catch (NumberFormatException e) {
             Util.editMessageError(message, e.toString());
-            return null;
+            return;
         }
 
         MessageHistory history = message.getChannel().getHistory();
@@ -29,7 +29,5 @@ public class CommandPrune {
                                    .filter(m -> m.getAuthor().getId().equalsIgnoreCase(message.getAuthor().getId()))
                                    .collect(Collectors.toList())
                                    .forEach(m -> m.delete().queue()));
-
-        return null;
     }
 }

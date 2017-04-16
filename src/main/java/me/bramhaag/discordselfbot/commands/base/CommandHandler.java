@@ -2,6 +2,7 @@ package me.bramhaag.discordselfbot.commands.base;
 
 import lombok.NonNull;
 import me.bramhaag.discordselfbot.Bot;
+import me.bramhaag.discordselfbot.util.BreakException;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Channel;
@@ -65,12 +66,21 @@ public class CommandHandler {
             if (!name.equalsIgnoreCase(command)) return;
 
             Command info = data.getAnnotation();
-            if (info.minArgs() != -1 && info.minArgs() < args.length) {
-                message.editMessage(new MessageBuilder().appendCodeBlock("An error occurred while executing command! Not enough arguments!", "javascript").build());
+            if (info.minArgs() != -1 && info.minArgs() > args.length) {
+                message.editMessage(new MessageBuilder().appendCodeBlock("An error occurred while executing command! Not enough arguments!", "javascript").build()).queue();
                 return;
             }
 
             try {
+                data.getMethod().invoke(data.getExecutor(), message, message.getTextChannel(), args);
+                throw new BreakException();
+
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                //TODO handle exception
+                e.printStackTrace();
+            }
+
+            /*try {
                 Object output = data.getMethod().invoke(data.getExecutor(), message, args);
 
                 if(output == null) {
@@ -93,7 +103,7 @@ public class CommandHandler {
             } catch (IllegalAccessException | InvocationTargetException e) {
                 //TODO handle exception
                 e.printStackTrace();
-            }
+            }*/
         });
     }
 }
