@@ -2,6 +2,7 @@ package me.bramhaag.discordselfbot;
 
 import lombok.Getter;
 import lombok.NonNull;
+import me.bramhaag.discordselfbot.commands.CommandEmbed;
 import me.bramhaag.discordselfbot.commands.CommandPing;
 import me.bramhaag.discordselfbot.commands.base.CommandHandler;
 import me.bramhaag.discordselfbot.listeners.MessageListener;
@@ -33,6 +34,9 @@ public class Bot {
         this.jda.addEventListener(new MessageListener(this));
         this.commandHandler = new CommandHandler();
 
-        this.commandHandler.register(new CommandPing());
+        this.commandHandler.register(
+                new CommandEmbed(),
+                new CommandPing()
+        );
     }
 }

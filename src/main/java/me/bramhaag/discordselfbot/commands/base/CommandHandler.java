@@ -12,7 +12,11 @@ public class CommandHandler {
 
     private Map<String, CommandData> commands = new HashMap<>();
 
-    public void register(@NonNull Object object) {
+    public void register(@NonNull Object... objects) {
+        Arrays.stream(objects).forEach(this::register);
+    }
+
+    private void register(@NonNull Object object) {
         Arrays.stream(object.getClass().getMethods()).forEach(method -> {
             if(!method.isAnnotationPresent(Command.class)) return;
 
