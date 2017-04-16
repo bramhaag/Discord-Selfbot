@@ -48,24 +48,33 @@ public class CommandEvaluate {
 
         Color color;
 
+        long time;
+
         try {
+            long currentNanos = System.nanoTime();
             Object rawOutput = engine.eval(String.format("with (imports) { %s }", input));
+            time = System.nanoTime() - currentNanos;
+
             output = rawOutput == null ? "null" : rawOutput.toString();
 
             color = Color.GREEN;
         } catch (ScriptException e) {
             output = e.getMessage();
+            time = 0;
 
             color = Color.RED;
         }
 
-        channel.sendMessage(new EmbedBuilder()
+        message.editMessage(new EmbedBuilder()
                 .setTitle("Evaluate", null)
-                .setDescription(new MessageBuilder().append("Input:\n")
-                                                    .appendCodeBlock(input, "javascript")
-                                                    .append("Output:\n")
-                                                    .appendCodeBlock(output, "javascript")
-                                                    .build().getRawContent())
+                //.setDescription(new MessageBuilder().append("Input:\n")
+                //                                    .appendCodeBlock(input, "javascript")
+                //                                    .append("Output:\n")
+                //                                    .appendCodeBlock(output, "javascript")
+                //                                    .build().getRawContent())
+                .addField("Input",  new MessageBuilder().appendCodeBlock(input, "javascript").build().getRawContent(), true)
+                .addField("Output", new MessageBuilder().appendCodeBlock(output, "javascript").build().getRawContent(), true)
+                .setFooter(time == 0 ? "An error occurred" : String.format("Evaluation took %d ms (%d ns) to complete", (long)Math.floor(time / 1000000), time), null)
                 .setColor(color)
                 .build()).queue();
     }

@@ -46,7 +46,7 @@ public class CommandHandler {
      * Execute command from a {@link MessageReceivedEvent}
      * @param event Event which contains all data for the command
      *
-     * @throws BreakException when command is found
+     * @throws BreakException thrown when command is found
      */
     public void executeCommand(@NonNull MessageReceivedEvent event) {
         Message message = event.getMessage();

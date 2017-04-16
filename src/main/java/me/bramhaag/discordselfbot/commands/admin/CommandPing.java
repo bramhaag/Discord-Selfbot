@@ -13,8 +13,8 @@ public class CommandPing {
         long startMillis = System.currentTimeMillis();
         message.editMessage("`Waiting...`").queue(m -> m.editMessage(
                 new EmbedBuilder().setTitle(Constants.PONG_EMOTE + " Pong!", null)
-                                  .addField("Response time", (System.currentTimeMillis() - startMillis) + " ms", false)
-                                  .addField("Response time (JDA)", message.getJDA().getPing() + " ms", false)
+                                  .addField("Response time (Bot)", (System.currentTimeMillis() - startMillis) + " ms", true)
+                                  .addField("Response time (API)", message.getJDA().getPing() + " ms", true)
                                   .build()).queue());
     }
 }
