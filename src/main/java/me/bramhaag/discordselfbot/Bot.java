@@ -8,6 +8,7 @@ import me.bramhaag.discordselfbot.commands.admin.CommandPrune;
 import me.bramhaag.discordselfbot.commands.admin.CommandReload;
 import me.bramhaag.discordselfbot.commands.CommandHandler;
 import me.bramhaag.discordselfbot.commands.fun.CommandEmbed;
+import me.bramhaag.discordselfbot.commands.fun.CommandSpace;
 import me.bramhaag.discordselfbot.commands.fun.CommandTriggered;
 import me.bramhaag.discordselfbot.commands.util.*;
 import me.bramhaag.discordselfbot.listeners.MessageListener;
@@ -50,7 +51,8 @@ public class Bot {
                 new CommandPrune(),
                 new CommandReload(),
                 new CommandTimer(),
-                new CommandTriggered()
+                new CommandTriggered(),
+                new CommandSpace()
         );
     }
 }
