@@ -10,7 +10,7 @@ import java.io.IOException;
 
 public class CommandTriggered {
 
-    @Command(name = "triggered", aliases = { "trigger" }, minArgs = 1)
+    @Command(name = "triggered", aliases = { "trigger", "triggering" }, minArgs = 1)
     public void execute(Message message, TextChannel channel, String[] args) {
         if(message.getMentionedUsers().size() == 0) {
             Util.editMessageError(message, "Invalid user!");
