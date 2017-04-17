@@ -23,8 +23,8 @@ repositories {
 
 dependencies {
     compile 'net.dv8tion:JDA:3.0.0_175'
-    compile 'org.jsoup:jsoup:1.8.3'
     compile 'com.google.guava:guava:21.0'
+    compile group: 'commons-io', name: 'commons-io', version: '2.5'
 
     compileOnly "org.projectlombok:lombok:1.16.14"
 }

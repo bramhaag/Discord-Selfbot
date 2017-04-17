@@ -10,6 +10,7 @@ import java.io.IOException;
 
 public class CommandTriggered {
 
+    //TODO JMagik
     @Command(name = "triggered", aliases = { "trigger", "triggering" }, minArgs = 1)
     public void execute(Message message, TextChannel channel, String[] args) {
         if(message.getMentionedUsers().size() == 0) {

@@ -54,7 +54,8 @@ public class Bot {
                 new CommandTimer(),
                 new CommandTriggered(),
                 new CommandSpace(),
-                new CommandHTML()
+                new CommandHTML(),
+                new CommandSpeedtest()
         );
     }
 }

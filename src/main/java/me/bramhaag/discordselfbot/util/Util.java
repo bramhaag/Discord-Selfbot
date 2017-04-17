@@ -1,5 +1,6 @@
 package me.bramhaag.discordselfbot.util;
 
+import me.bramhaag.discordselfbot.Constants;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
@@ -74,7 +75,7 @@ public class Util {
 
     public static BufferedImage getImage(String url) throws IOException {
         HttpURLConnection connection = (HttpURLConnection)new URL(url).openConnection();
-        connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36");
+        connection.setRequestProperty("User-Agent", Constants.USER_AGENT);
         //BufferedImage image = ImageIO.read(connection.getInputStream());
         //ImageIO.write(image, "png", new File("avatar.png"));
         return ImageIO.read(connection.getInputStream());
