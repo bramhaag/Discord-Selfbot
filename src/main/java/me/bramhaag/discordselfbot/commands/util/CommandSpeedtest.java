@@ -12,6 +12,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 
 public class CommandSpeedtest {
@@ -44,7 +47,9 @@ public class CommandSpeedtest {
                                    .setTitle("Speedtest", "http://speedtest.net/")
                                    .addField("Ping", "Waiting...", true)
                                    .addField("Download", "Waiting...", true)
-                                   .addField("Upload", "Waiting...", true);
+                                   .addField("Upload", "Waiting...", true)
+                                   .setFooter("speedtest.net | " + new SimpleDateFormat("EE dd-MM-Y H:mm a").format(new Date()), null);
+
 
         MessageEmbed embed = builder.build();
 
@@ -83,6 +88,7 @@ public class CommandSpeedtest {
     private MessageEmbed editField(String name, String value, MessageEmbed embed) {
         EmbedBuilder builder = new EmbedBuilder();
         builder.setTitle(embed.getTitle(), embed.getUrl());
+        builder.setFooter(embed.getFooter().getText(), null);
         embed.getFields().forEach(field -> {
             if(field.getName().equalsIgnoreCase(name)) {
                 builder.addField(name, value, true);
