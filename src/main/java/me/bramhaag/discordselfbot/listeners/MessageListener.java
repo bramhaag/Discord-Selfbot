@@ -7,30 +7,49 @@ import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class MessageListener extends ListenerAdapter {
 
     private Bot bot;
+
+    private Map<String, String> placeholders;
+
     public MessageListener(Bot bot) {
         this.bot = bot;
+
+        this.placeholders = new HashMap<>();
+        this.placeholders.put("lenny", Constants.LENNY_FACE);
+        this.placeholders.put("shrug", Constants.SHRUG);
     }
 
     @Override
     public void onMessageReceived(MessageReceivedEvent e) {
-        if(!e.getAuthor().getId().equalsIgnoreCase(e.getJDA().getSelfUser().getId())) {
+        if (!e.getAuthor().getId().equalsIgnoreCase(e.getJDA().getSelfUser().getId())) {
             return;
         }
 
         Message message = e.getMessage();
+        String rawContent = e.getMessage().getRawContent();
 
-        edit(message, "{lenny}", Constants.LENNY_FACE);
-        edit(message, "{shrug}", Constants.SHRUG);
+        for (Map.Entry placeholder : placeholders.entrySet()) {
+            rawContent = rawContent.replace("{" + placeholder.getKey() + "}", placeholder.getValue().toString());
+        }
 
+        if(message.getRawContent().equals(rawContent))
+            executeCommand(message);
+        else
+            message.editMessage(rawContent).queue(this::executeCommand);
+    }
+
+    private void executeCommand(Message message) {
         if(!message.getRawContent().startsWith(Bot.PREFIX)) {
             return;
         }
 
         try {
-            bot.getCommandHandler().executeCommand(e);
+            bot.getCommandHandler().executeCommand(message);
         } catch (BreakException ex) {
             //Ignore
         }

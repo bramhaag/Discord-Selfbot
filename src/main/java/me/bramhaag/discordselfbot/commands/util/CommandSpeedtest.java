@@ -1,15 +1,13 @@
 package me.bramhaag.discordselfbot.commands.util;
 
 import me.bramhaag.discordselfbot.commands.Command;
+import me.bramhaag.discordselfbot.util.Util;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageEmbed;
 import net.dv8tion.jda.core.entities.TextChannel;
 
 import java.io.*;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 
 public class CommandSpeedtest {
 
@@ -22,7 +20,7 @@ public class CommandSpeedtest {
                                    .addField("Ping", "Waiting...", true)
                                    .addField("Download", "Waiting...", true)
                                    .addField("Upload", "Waiting...", true)
-                                   .setFooter("speedtest.net | " + new SimpleDateFormat("EE dd-MM-Y H:mm a").format(new Date()), null);
+                                   .setFooter("Speedtest.net | " + Util.generateTimestamp(), null);
 
 
         MessageEmbed embed = builder.build();

@@ -8,6 +8,7 @@ import net.dv8tion.jda.core.entities.TextChannel;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 
 import java.awt.*;
+import java.util.concurrent.TimeUnit;
 
 public class CommandTimer {
 
@@ -19,16 +20,23 @@ public class CommandTimer {
             delay = Long.valueOf(args[0]);
         }
         catch (NumberFormatException e) {
-            Util.editMessageError(message, e.toString());
+            Util.sendError(message, e.toString());
             return;
         }
 
-        Util.editEmbed(message, new EmbedBuilder()
+        message.editMessage(new EmbedBuilder()
                 .setTitle("Timer", null)
                 .setDescription("Timer ending in " + DurationFormatUtils.formatDuration(delay * 1000, "H:mm:ss", true))
+                .setFooter("Timer | " + Util.generateTimestamp(), null)
                 .setColor(Color.GREEN)
-        .build());
+                .build())
+        .queue();
 
-        Util.sendEmbedAfter(new EmbedBuilder().setTitle("Timer", null).setDescription("Timer expired!").setColor(Color.GREEN).build(), message.getTextChannel(), message.getAuthor(), delay);
+        channel.sendMessage(new EmbedBuilder()
+                .setTitle("Timer", null)
+                .setDescription("Timer expired!")
+                .setFooter("Timer | " + Util.generateTimestamp(), null)
+                .setColor(Color.GREEN).build())
+        .queueAfter(delay, TimeUnit.SECONDS);
     }
 }

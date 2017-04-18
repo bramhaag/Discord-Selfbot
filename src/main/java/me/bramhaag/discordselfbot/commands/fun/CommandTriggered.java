@@ -1,5 +1,6 @@
 package me.bramhaag.discordselfbot.commands.fun;
 
+import com.google.common.base.Preconditions;
 import magick.DrawInfo;
 import magick.ImageInfo;
 import magick.MagickException;
@@ -22,7 +23,7 @@ public class CommandTriggered {
     @Command(name = "triggered", aliases = { "trigger", "triggering" }, minArgs = 1)
     public void execute(Message message, TextChannel channel, String[] args) {
         if(message.getMentionedUsers().size() == 0) {
-            Util.editMessageError(message, "Invalid user!");
+            Util.sendError(message, "Invalid user!");
             return;
         }
 
@@ -59,10 +60,12 @@ public class CommandTriggered {
 
             process.destroy();
 
-            message.getChannel().sendFile(output, new MessageBuilder().append(" ").build()).queue(m -> message.delete());
+            message.getChannel().sendFile(output, new MessageBuilder().append(" ").build()).queue(m -> {
+                message.delete().queue();
 
-            output.delete();
-            avatar.delete();
+                Preconditions.checkState(avatar.delete(), String.format("File %s not deleted!", avatar.getName()));
+                Preconditions.checkState(output.delete(), String.format("File %s not deleted!", output.getName()));
+            });
         } catch (IOException e) {
             e.printStackTrace();
         }

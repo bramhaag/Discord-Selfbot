@@ -22,6 +22,9 @@ public class CommandSpace {
             builder.append(Character.toUpperCase(c)).append(' ');
         }
 
-        message.editMessage(new MessageBuilder().appendCodeBlock(builder.toString(), "").build()).queue();
+        message.editMessage(new MessageBuilder()
+                .appendCodeBlock(builder.toString(), "")
+                .build())
+                .queue();
     }
 }

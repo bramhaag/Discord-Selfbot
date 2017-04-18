@@ -1,5 +1,6 @@
 package me.bramhaag.discordselfbot.commands.fun;
 
+import com.google.common.base.Preconditions;
 import me.bramhaag.discordselfbot.commands.Command;
 import me.bramhaag.discordselfbot.util.Util;
 import net.dv8tion.jda.core.MessageBuilder;
@@ -39,6 +40,8 @@ public class CommandHTML {
             html = html.substring(3, html.length() - 3);
         }
 
+        html = html.startsWith("```") && html.endsWith("```") ? html.substring(3, html.length() - 3) : html;
+
         BufferedImage image = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().createCompatibleImage(width, height);
         Graphics graphics = image.createGraphics();
 
@@ -54,11 +57,13 @@ public class CommandHTML {
         }
 
         try {
-            message.getChannel().sendFile(file, new MessageBuilder().append(" ").build()).queue(m -> message.delete());
+            channel.sendFile(file, new MessageBuilder().append(" ").build()).queue(m -> {
+                message.delete().queue();
+
+                Preconditions.checkState(file.delete(), String.format("File %s not deleted!", file.getName()));
+            });
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        if(file.exists()) file.delete();
     }
 }

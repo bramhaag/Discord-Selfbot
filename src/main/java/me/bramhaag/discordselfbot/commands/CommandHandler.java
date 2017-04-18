@@ -44,12 +44,11 @@ public class CommandHandler {
 
     /**
      * Execute command from a {@link MessageReceivedEvent}
-     * @param event Event which contains all data for the command
+     * @param message Message containing command
      *
-     * @throws BreakException thrown when command is found
+     * @throws BreakException thrown when command is found to break the forEach loop, should be ignored
      */
-    public void executeCommand(@NonNull MessageReceivedEvent event) {
-        Message message = event.getMessage();
+    public void executeCommand(@NonNull Message message) {
 
         String content = message.getRawContent();
         String[] parts = content.split(" ");

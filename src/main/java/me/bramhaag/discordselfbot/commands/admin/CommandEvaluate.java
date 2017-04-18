@@ -1,5 +1,6 @@
 package me.bramhaag.discordselfbot.commands.admin;
 
+import com.google.common.base.Stopwatch;
 import me.bramhaag.discordselfbot.Constants;
 import me.bramhaag.discordselfbot.util.Util;
 import me.bramhaag.discordselfbot.commands.Command;
@@ -13,6 +14,7 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import java.awt.*;
+import java.util.concurrent.TimeUnit;
 
 public class CommandEvaluate {
 
@@ -44,23 +46,26 @@ public class CommandEvaluate {
         engine.put("bot", message.getJDA().getSelfUser());
 
         String input = Util.combineArgs(args);
+        input = input.startsWith("```") && input.endsWith("```") ? input.substring(3, input.length() - 3) : input;
+
         String output;
 
         Color color;
 
-        long time;
+        Stopwatch stopwatch;
 
         try {
-            long currentNanos = System.nanoTime();
+            stopwatch = Stopwatch.createStarted();
             Object rawOutput = engine.eval(String.format("with (imports) { %s }", input));
-            time = System.nanoTime() - currentNanos;
+            stopwatch.stop();
 
             output = rawOutput == null ? "null" : rawOutput.toString();
 
             color = Color.GREEN;
         } catch (ScriptException e) {
             output = e.getMessage();
-            time = 0;
+            //stopwatch = Stopwatch.createStarted();
+            stopwatch = Stopwatch.createUnstarted();
 
             color = Color.RED;
         }
@@ -69,7 +74,7 @@ public class CommandEvaluate {
                 .setTitle("Evaluate", null)
                 .addField("Input",  new MessageBuilder().appendCodeBlock(input, "javascript").build().getRawContent(), true)
                 .addField("Output", new MessageBuilder().appendCodeBlock(output, "javascript").build().getRawContent(), true)
-                .setFooter(time == 0 ? Constants.CROSS_EMOTE + " An error occurred" : String.format(Constants.CHECK_EMOTE + " Took %d ms (%d ns) to complete", (long)Math.floor(time / 1000000), time), null)
+                .setFooter(stopwatch.elapsed(TimeUnit.NANOSECONDS) == 0 ? Constants.CROSS_EMOTE + " An error occurred" : String.format(Constants.CHECK_EMOTE + " Took %d ms (%d ns) to complete | %s", stopwatch.elapsed(TimeUnit.MILLISECONDS), stopwatch.elapsed(TimeUnit.NANOSECONDS), Util.generateTimestamp()), null)
                 .setColor(color)
                 .build()).queue();
     }

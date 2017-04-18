@@ -23,6 +23,7 @@ import org.apache.commons.io.FileUtils;
 import javax.security.auth.login.LoginException;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 
 public class Bot {
 
@@ -73,8 +74,8 @@ public class Bot {
         }
 
         try {
-            FileUtils.copyURLToFile(getClass().getResource("/libs/speedtest.py"),    new File(libsDir, "speedtest.py"));
-            FileUtils.copyURLToFile(getClass().getResource("/assets/triggered.png"), new File(assetsDir, "triggered.png"));
+            extract(getClass().getResource("/libs/speedtest.py"),    new File(libsDir, "speedtest.py"));
+            extract(getClass().getResource("/assets/triggered.png"), new File(assetsDir, "triggered.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -94,5 +95,10 @@ public class Bot {
         }
 
         return true;
+    }
+
+    private void extract(URL url, File destination) throws IOException {
+        if(!destination.exists())
+            FileUtils.copyURLToFile(url, destination);
     }
 }
