@@ -35,6 +35,11 @@ public class Bot {
     @Getter
     private CommandHandler commandHandler;
 
+    /**
+     * Constructor which starts bot
+     *
+     * @param token Bot's token
+     */
     Bot(@NonNull String token) {
         try {
             this.jda = new JDABuilder(AccountType.CLIENT).setToken(token).setAutoReconnect(true).buildBlocking();
@@ -50,6 +55,10 @@ public class Bot {
         registerCommands();
     }
 
+    /**
+     * Register all commands
+     */
+    //TODO scan package with commands
     public void registerCommands() {
         this.commandHandler.register(
                 new CommandEmbed(),
@@ -65,6 +74,12 @@ public class Bot {
         );
     }
 
+
+    /**
+     * Extract files from resources. It won't copy the file if it already exists.
+     *
+     * @return {@code true} when all files were copied without issues, {@code false} when something went wrong
+     */
     private boolean extractLibs() {
         File libsDir =   new File("libs");
         File assetsDir = new File("assets");
@@ -83,6 +98,13 @@ public class Bot {
         return true;
     }
 
+    /**
+     * Create directory
+     *
+     * @param dir directory to create
+     *
+     * @return {@code true} when directory was created without issues, {@code false} when something went wrong
+     */
     private boolean createDir(File dir) {
         if(!dir.exists() || !dir.isDirectory()) {
             System.out.println(String.format("%s folder not found. Unpacking...", dir.getName()));
@@ -97,6 +119,18 @@ public class Bot {
         return true;
     }
 
+    /**
+     * Copy file from {@code url} to {@code destination}
+     *
+     * @param url url to file
+     * @param destination destination file
+     *
+     * @throws IOException if {@code url} cannot be opened
+     * @throws IOException if {@code destination} is a directory
+     * @throws IOException if {@code destination} cannot be written
+     * @throws IOException if {@code destination} needs creating but can't be
+     * @throws IOException if an IO error occurs during copying
+     */
     private void extract(URL url, File destination) throws IOException {
         if(!destination.exists())
             FileUtils.copyURLToFile(url, destination);
