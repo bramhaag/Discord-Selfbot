@@ -30,7 +30,7 @@ public class CommandSpeedtest {
 
 
         try {
-            Process process = Runtime.getRuntime().exec("py libs/speedtest.py --share");
+            Process process = new ProcessBuilder("py", "libs/speedtest.py", "--share").start();
 
             BufferedReader stdInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
             while ((s = stdInput.readLine()) != null) {

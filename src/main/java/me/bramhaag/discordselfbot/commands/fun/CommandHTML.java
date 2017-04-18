@@ -37,10 +37,6 @@ public class CommandHTML {
             html = Util.combineArgs(args);
         }
 
-        if(html.startsWith("```") && html.endsWith("```")) {
-            html = html.substring(3, html.length() - 3);
-        }
-
         html = html.startsWith("```") && html.endsWith("```") ? html.substring(3, html.length() - 3) : html;
 
         BufferedImage image = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().createCompatibleImage(width, height);

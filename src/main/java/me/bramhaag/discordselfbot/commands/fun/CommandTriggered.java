@@ -44,32 +44,30 @@ public class CommandTriggered {
         String triggeredPath = triggered.getAbsolutePath();
 
 
-        try {
-            //TODO path work pls
-            //EDIT fuck that I'll make a config file
-            Process process = Runtime.getRuntime().exec(("C:/Program Files/ImageMagick-7.0.5-Q16/magick.exe convert canvas:none -size 512x680 -resize 512x680! -draw \"image over -60,-60 640,640 \"\"{avatar}\"\"\" -draw \"image over 0,512 0,0 \"\"{triggered}\"\"\" " +
-                    "( canvas:none -size 512x680! -draw \"image over -45,-50 640,640 \"\"{avatar}\"\"\" -draw \"image over -5,512 0,0 \"\"{triggered}\"\"\" ) " +
-                    "( canvas:none -size 512x680! -draw \"image over -50,-45 640,640 \"\"{avatar}\"\"\" -draw \"image over -1,505 0,0 \"\"{triggered}\"\"\" )  " +
-                    "( canvas:none -size 512x680! -draw \"image over -45,-65 640,640 \"\"{avatar}\"\"\" -draw \"image over -5,530 0,0 \"\"{triggered}\"\"\" ) " +
-                    "-layers Optimize -set delay 2 " + output.getPath()).replace("{avatar}", avatarPath).replace("{triggered}", triggeredPath));
+        //TODO path work pls
+        //EDIT fuck that I'll make a config file
 
-            String s;
+        new Thread(() -> {
+            try {
+                Process process = Runtime.getRuntime().exec(("C:/Program Files/ImageMagick-7.0.5-Q16/magick.exe convert canvas:none -size 512x680 -resize 512x680! -draw \"image over -60,-60 640,640 \"\"{avatar}\"\"\" -draw \"image over 0,512 0,0 \"\"{triggered}\"\"\" " +
+                        "( canvas:none -size 512x680! -draw \"image over -45,-50 640,640 \"\"{avatar}\"\"\" -draw \"image over -5,512 0,0 \"\"{triggered}\"\"\" ) " +
+                        "( canvas:none -size 512x680! -draw \"image over -50,-45 640,640 \"\"{avatar}\"\"\" -draw \"image over -1,505 0,0 \"\"{triggered}\"\"\" )  " +
+                        "( canvas:none -size 512x680! -draw \"image over -45,-65 640,640 \"\"{avatar}\"\"\" -draw \"image over -5,530 0,0 \"\"{triggered}\"\"\" ) " +
+                        "-layers Optimize -set delay 2 " + output.getPath()).replace("{avatar}", avatarPath).replace("{triggered}", triggeredPath));
 
-            BufferedReader stdInput = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-            while ((s = stdInput.readLine()) != null) {
-                System.out.println(s);
+                process.waitFor();
+
+                message.getChannel().sendFile(output, new MessageBuilder().append(" ").build()).queue(m -> {
+                    message.delete().queue();
+
+                    Preconditions.checkState(avatar.delete(), String.format("File %s not deleted!", avatar.getName()));
+                    Preconditions.checkState(output.delete(), String.format("File %s not deleted!", output.getName()));
+                });
+            } catch (IOException | InterruptedException e) {
+                e.printStackTrace();
             }
+        }).start();
 
-            process.destroy();
-
-            message.getChannel().sendFile(output, new MessageBuilder().append(" ").build()).queue(m -> {
-                message.delete().queue();
-
-                Preconditions.checkState(avatar.delete(), String.format("File %s not deleted!", avatar.getName()));
-                Preconditions.checkState(output.delete(), String.format("File %s not deleted!", output.getName()));
-            });
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        message.editMessage("```Generating GIF...```").queue();
     }
 }
