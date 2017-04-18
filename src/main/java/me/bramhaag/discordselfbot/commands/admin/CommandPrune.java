@@ -1,5 +1,6 @@
 package me.bramhaag.discordselfbot.commands.admin;
 
+import lombok.NonNull;
 import me.bramhaag.discordselfbot.Constants;
 import me.bramhaag.discordselfbot.util.Util;
 import me.bramhaag.discordselfbot.commands.Command;
@@ -17,7 +18,7 @@ import java.util.stream.Collectors;
 public class CommandPrune {
 
     @Command(name = "prune", aliases = { "purge" }, minArgs = 1)
-    public void execute(Message message, TextChannel channel, String[] args) {
+    public void execute(@NonNull Message message, @NonNull TextChannel channel, @NonNull String[] args) {
         int amount;
 
         try {
