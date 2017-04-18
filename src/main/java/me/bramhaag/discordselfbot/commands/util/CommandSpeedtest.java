@@ -5,43 +5,17 @@ import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageEmbed;
 import net.dv8tion.jda.core.entities.TextChannel;
-import org.apache.commons.io.FileUtils;
 
 import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 
 
 public class CommandSpeedtest {
 
-    File speedtestFile;
-
-    public CommandSpeedtest() {
-        speedtestFile = new File("speedtest.py");
-        if(speedtestFile.exists())  {
-            return;
-        }
-
-        try {
-            URL website = new URL("https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py");
-            ReadableByteChannel rbc = Channels.newChannel(website.openStream());
-            FileOutputStream fos = new FileOutputStream("speedtest.py");
-            fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
-
     @Command(name = "speedtest")
     public void execute(Message message, TextChannel channel, String[] args) {
-        String s = "";
-        String pS = "";
+        String s;
 
         EmbedBuilder builder = new EmbedBuilder()
                                    .setTitle("Speedtest", "http://speedtest.net/")
@@ -57,7 +31,7 @@ public class CommandSpeedtest {
 
 
         try {
-            Process process = Runtime.getRuntime().exec("py speedtest.py --share");
+            Process process = Runtime.getRuntime().exec("py libs/speedtest.py --share");
 
             BufferedReader stdInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
             while ((s = stdInput.readLine()) != null) {
@@ -81,6 +55,7 @@ public class CommandSpeedtest {
 
             process.destroy();
         } catch (IOException e) {
+            //TODO handle exception
             e.printStackTrace();
         }
     }

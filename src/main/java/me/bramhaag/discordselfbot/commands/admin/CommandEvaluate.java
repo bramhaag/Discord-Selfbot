@@ -67,11 +67,6 @@ public class CommandEvaluate {
 
         message.editMessage(new EmbedBuilder()
                 .setTitle("Evaluate", null)
-                //.setDescription(new MessageBuilder().append("Input:\n")
-                //                                    .appendCodeBlock(input, "javascript")
-                //                                    .append("Output:\n")
-                //                                    .appendCodeBlock(output, "javascript")
-                //                                    .build().getRawContent())
                 .addField("Input",  new MessageBuilder().appendCodeBlock(input, "javascript").build().getRawContent(), true)
                 .addField("Output", new MessageBuilder().appendCodeBlock(output, "javascript").build().getRawContent(), true)
                 .setFooter(time == 0 ? Constants.CROSS_EMOTE + " An error occurred" : String.format(Constants.CHECK_EMOTE + " Took %d ms (%d ns) to complete", (long)Math.floor(time / 1000000), time), null)

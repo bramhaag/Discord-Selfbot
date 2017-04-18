@@ -1,0 +1,5 @@
+magick convert canvas:none -size 512x680 -resize 512x680! -draw "image over -60,-60 640,640 ""avatar.png""" -draw "image over 0,512 0,0 ""assets\triggered.png""" ^
+( canvas:none -size 512x680! -draw "image over -45,-50 640,640 ""avatar.png""" -draw "image over -5,512 0,0 ""assets\triggered.png""" ) ^
+( canvas:none -size 512x680! -draw "image over -50,-45 640,640 ""avatar.png""" -draw "image over 0,505 0,0 ""assets\triggered.png""" ) ^
+( canvas:none -size 512x680! -draw "image over -45,-65 640,640 ""avatar.png""" -draw "image over -5,530 0,0 ""assets\triggered.png""" ) ^
+-layers Optimize -set delay 2 output.gif

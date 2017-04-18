@@ -10,5 +10,7 @@ public class Main {
         Preconditions.checkArgument(args.length == 1, "Please specify a token");
 
         bot = new Bot(args[0]);
+
+
     }
 }
