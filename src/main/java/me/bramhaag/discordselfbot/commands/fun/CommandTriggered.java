@@ -18,6 +18,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 
 public class CommandTriggered {
 
@@ -40,22 +41,36 @@ public class CommandTriggered {
         File output = new File("triggered_" + user.getId() + "_" + System.currentTimeMillis() + ".gif");
         File triggered = new File("assets/triggered.png");
 
-        String avatarPath =    avatar.getAbsolutePath();
+        String avatarPath    = avatar.getAbsolutePath();
         String triggeredPath = triggered.getAbsolutePath();
 
-
-        //TODO path work pls
-        //EDIT fuck that I'll make a config file
+        String text = args.length == 1 ? null : Util.combineArgs(Arrays.copyOfRange(args, 1, args.length));
+        String magickPath = "C:/Program Files/ImageMagick-7.0.5-Q16/magick.exe";
 
         new Thread(() -> {
             try {
-                Process process = Runtime.getRuntime().exec(("C:/Program Files/ImageMagick-7.0.5-Q16/magick.exe convert canvas:none -size 512x680 -resize 512x680! -draw \"image over -60,-60 640,640 \"\"{avatar}\"\"\" -draw \"image over 0,512 0,0 \"\"{triggered}\"\"\" " +
+                //TODO path work pls
+                //EDIT fuck that I'll make a config file
+                Process generateGif = Runtime.getRuntime().exec((magickPath + " convert canvas:none -size 512x680 -resize 512x680! -draw \"image over -60,-60 640,640 \"\"{avatar}\"\"\" -draw \"image over 0,512 0,0 \"\"{triggered}\"\"\" " +
                         "( canvas:none -size 512x680! -draw \"image over -45,-50 640,640 \"\"{avatar}\"\"\" -draw \"image over -5,512 0,0 \"\"{triggered}\"\"\" ) " +
                         "( canvas:none -size 512x680! -draw \"image over -50,-45 640,640 \"\"{avatar}\"\"\" -draw \"image over -1,505 0,0 \"\"{triggered}\"\"\" )  " +
                         "( canvas:none -size 512x680! -draw \"image over -45,-65 640,640 \"\"{avatar}\"\"\" -draw \"image over -5,530 0,0 \"\"{triggered}\"\"\" ) " +
                         "-layers Optimize -set delay 2 " + output.getPath()).replace("{avatar}", avatarPath).replace("{triggered}", triggeredPath));
 
-                process.waitFor();
+                //Debug
+                /*String s;
+
+                BufferedReader stdInput = new BufferedReader(new InputStreamReader(generateGif.getErrorStream()));
+                while ((s = stdInput.readLine()) != null) {
+                    System.out.println(s);
+                }*/
+
+                generateGif.waitFor();
+
+                if(text != null) {
+                    Process addText = Runtime.getRuntime().exec(String.format("%s convert %s -font Calibri -pointsize 60 caption:\"%s\" %s", magickPath, output, text, output));
+                    addText.waitFor();
+                }
 
                 message.getChannel().sendFile(output, new MessageBuilder().append(" ").build()).queue(m -> {
                     message.delete().queue();
