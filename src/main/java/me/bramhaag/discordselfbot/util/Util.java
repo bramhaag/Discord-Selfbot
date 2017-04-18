@@ -1,5 +1,6 @@
 package me.bramhaag.discordselfbot.util;
 
+import lombok.NonNull;
 import me.bramhaag.discordselfbot.Constants;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.Permission;
@@ -28,19 +29,22 @@ public class Util {
      * @param args {@code String[]} to combine
      * @return Combined {@code args}
      */
-    public static String combineArgs(String[] args) {
+    @NonNull
+    public static String combineArgs(@NonNull String[] args) {
         return StringUtils.join(args, ' ');
     }
 
-    public static void sendError(Message message, String reason) {
+    public static void sendError(@NonNull Message message, @NonNull String reason) {
         message.editMessage(new MessageBuilder().appendCodeBlock("An error occurred! " + reason, "javascript").build().getRawContent(), 5).queue(m -> m.delete().queueAfter(5, TimeUnit.SECONDS));
     }
 
+    @NonNull
     public static String generateTimestamp() {
         return dateFormat.format(new Date());
     }
 
-    public static BufferedImage getImage(String url) throws IOException {
+    @NonNull
+    public static BufferedImage getImage(@NonNull String url) throws IOException {
         HttpURLConnection connection = (HttpURLConnection)new URL(url).openConnection();
         connection.setRequestProperty("User-Agent", Constants.USER_AGENT);
 

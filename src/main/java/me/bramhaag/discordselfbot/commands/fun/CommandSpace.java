@@ -1,5 +1,6 @@
 package me.bramhaag.discordselfbot.commands.fun;
 
+import lombok.NonNull;
 import me.bramhaag.discordselfbot.commands.Command;
 import me.bramhaag.discordselfbot.util.Util;
 import net.dv8tion.jda.core.MessageBuilder;
@@ -9,7 +10,7 @@ import net.dv8tion.jda.core.entities.TextChannel;
 public class CommandSpace {
 
     @Command(name = "space", minArgs = 1)
-    public void execute(Message message, TextChannel channel, String[] args) {
+    public void execute(@NonNull Message message, @NonNull TextChannel channel, @NonNull String[] args) {
         String input = Util.combineArgs(args);
         StringBuilder builder = new StringBuilder();
 

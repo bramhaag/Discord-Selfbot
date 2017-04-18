@@ -1,5 +1,6 @@
 package me.bramhaag.discordselfbot.commands.admin;
 
+import lombok.NonNull;
 import me.bramhaag.discordselfbot.Constants;
 import me.bramhaag.discordselfbot.Main;
 import me.bramhaag.discordselfbot.commands.Command;
@@ -12,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 public class CommandReload {
 
     @Command(name = "reload")
-    public void execute(Message message, TextChannel channel, String[] args) {
+    public void execute(@NonNull Message message, @NonNull TextChannel channel, @NonNull String[] args) {
         Main.bot.getCommandHandler().unregister();
         Main.bot.registerCommands();
 

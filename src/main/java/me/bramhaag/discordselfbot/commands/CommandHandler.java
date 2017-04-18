@@ -77,31 +77,6 @@ public class CommandHandler {
                 //TODO handle exception
                 e.printStackTrace();
             }
-
-            /*try {
-                Object output = data.getMethod().invoke(data.getExecutor(), message, args);
-
-                if(output == null) {
-                    return;
-                }
-
-                if(output instanceof Message) {
-                    message.editMessage((Message) output).queue();
-                    return;
-                }
-
-                if(output instanceof MessageEmbed) {
-                    MessageEmbed messageEmbed = (MessageEmbed) output;
-
-                    if(message.getGuild().getMember(message.getAuthor()).hasPermission((Channel)message.getChannel(), Permission.MESSAGE_EMBED_LINKS))
-                        message.editMessage(messageEmbed).queue();
-                    else
-                        message.editMessage(messageEmbed.getDescription()).queue();
-                }
-            } catch (IllegalAccessException | InvocationTargetException e) {
-                //TODO handle exception
-                e.printStackTrace();
-            }*/
         });
     }
 }

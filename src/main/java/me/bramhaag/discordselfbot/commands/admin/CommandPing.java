@@ -1,5 +1,6 @@
 package me.bramhaag.discordselfbot.commands.admin;
 
+import lombok.NonNull;
 import me.bramhaag.discordselfbot.Constants;
 import me.bramhaag.discordselfbot.commands.Command;
 import me.bramhaag.discordselfbot.util.Util;
@@ -14,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 public class CommandPing {
 
     @Command(name = "ping")
-    public void execute(Message message, TextChannel channel, String[] args) {
+    public void execute(@NonNull Message message, @NonNull TextChannel channel, @NonNull String[] args) {
         long startMillis = System.currentTimeMillis();
         message.editMessage("`Waiting...`").queue(m -> m.editMessage(
                 new EmbedBuilder().setTitle(Constants.PONG_EMOTE + " Pong!", null)

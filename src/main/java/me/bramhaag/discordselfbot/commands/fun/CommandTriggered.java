@@ -1,6 +1,7 @@
 package me.bramhaag.discordselfbot.commands.fun;
 
 import com.google.common.base.Preconditions;
+import lombok.NonNull;
 import magick.DrawInfo;
 import magick.ImageInfo;
 import magick.MagickException;
@@ -21,7 +22,7 @@ import java.io.InputStreamReader;
 public class CommandTriggered {
 
     @Command(name = "triggered", aliases = { "trigger", "triggering" }, minArgs = 1)
-    public void execute(Message message, TextChannel channel, String[] args) {
+    public void execute(@NonNull Message message, @NonNull TextChannel channel, @NonNull String[] args) {
         if(message.getMentionedUsers().size() == 0) {
             Util.sendError(message, "Invalid user!");
             return;
@@ -45,6 +46,7 @@ public class CommandTriggered {
 
         try {
             //TODO path work pls
+            //EDIT fuck that I'll make a config file
             Process process = Runtime.getRuntime().exec(("C:/Program Files/ImageMagick-7.0.5-Q16/magick.exe convert canvas:none -size 512x680 -resize 512x680! -draw \"image over -60,-60 640,640 \"\"{avatar}\"\"\" -draw \"image over 0,512 0,0 \"\"{triggered}\"\"\" " +
                     "( canvas:none -size 512x680! -draw \"image over -45,-50 640,640 \"\"{avatar}\"\"\" -draw \"image over -5,512 0,0 \"\"{triggered}\"\"\" ) " +
                     "( canvas:none -size 512x680! -draw \"image over -50,-45 640,640 \"\"{avatar}\"\"\" -draw \"image over -1,505 0,0 \"\"{triggered}\"\"\" )  " +

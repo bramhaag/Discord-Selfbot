@@ -1,6 +1,7 @@
 package me.bramhaag.discordselfbot.commands.admin;
 
 import com.google.common.base.Stopwatch;
+import lombok.NonNull;
 import me.bramhaag.discordselfbot.Constants;
 import me.bramhaag.discordselfbot.util.Util;
 import me.bramhaag.discordselfbot.commands.Command;
@@ -17,13 +18,12 @@ import java.awt.*;
 import java.util.concurrent.TimeUnit;
 
 public class CommandEvaluate {
-
-    private ScriptEngineManager factory;
+    
+    @NonNull
     private ScriptEngine engine;
 
     public CommandEvaluate() {
-        factory = new ScriptEngineManager();
-        engine = factory.getEngineByName("nashorn");
+        engine = new ScriptEngineManager().getEngineByName("nashorn");
 
         try {
             engine.eval(String.format("var imports = new JavaImporter(%s);", StringUtils.join(Constants.EVAL_IMPORTS, ',')));
@@ -33,7 +33,7 @@ public class CommandEvaluate {
     }
 
     @Command(name = "evaluate", aliases = { "eval", "e" })
-    public void execute(Message message, TextChannel channel, String[] args) {
+    public void execute(@NonNull Message message, @NonNull TextChannel channel, @NonNull String[] args) {
         engine.put("jda", message.getJDA());
 
         engine.put("channel", message.getChannel());
@@ -64,7 +64,6 @@ public class CommandEvaluate {
             color = Color.GREEN;
         } catch (ScriptException e) {
             output = e.getMessage();
-            //stopwatch = Stopwatch.createStarted();
             stopwatch = Stopwatch.createUnstarted();
 
             color = Color.RED;
