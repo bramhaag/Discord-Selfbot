@@ -8,10 +8,7 @@ import me.bramhaag.discordselfbot.commands.admin.CommandPing;
 import me.bramhaag.discordselfbot.commands.admin.CommandPrune;
 import me.bramhaag.discordselfbot.commands.admin.CommandReload;
 import me.bramhaag.discordselfbot.commands.CommandHandler;
-import me.bramhaag.discordselfbot.commands.fun.CommandEmbed;
-import me.bramhaag.discordselfbot.commands.fun.CommandHTML;
-import me.bramhaag.discordselfbot.commands.fun.CommandSpace;
-import me.bramhaag.discordselfbot.commands.fun.CommandTriggered;
+import me.bramhaag.discordselfbot.commands.fun.*;
 import me.bramhaag.discordselfbot.commands.util.*;
 import me.bramhaag.discordselfbot.listeners.MessageListener;
 import net.dv8tion.jda.core.AccountType;
@@ -70,7 +67,8 @@ public class Bot {
                 new CommandTriggered(),
                 new CommandSpace(),
                 new CommandHTML(),
-                new CommandSpeedtest()
+                new CommandSpeedtest(),
+                new CommandJavadoc()
         );
     }
 

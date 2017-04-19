@@ -2,10 +2,6 @@ package me.bramhaag.discordselfbot.commands.fun;
 
 import com.google.common.base.Preconditions;
 import lombok.NonNull;
-import magick.DrawInfo;
-import magick.ImageInfo;
-import magick.MagickException;
-import magick.MagickImage;
 import me.bramhaag.discordselfbot.commands.Command;
 import me.bramhaag.discordselfbot.util.Util;
 import net.dv8tion.jda.core.MessageBuilder;
@@ -14,10 +10,8 @@ import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
 
 import javax.imageio.ImageIO;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.Arrays;
 
 public class CommandTriggered {

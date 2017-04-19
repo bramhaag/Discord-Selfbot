@@ -28,6 +28,11 @@ public class Constants {
     public static final String[] EVAL_IMPORTS = { "java.lang", "java.io", "java.math", "java.util", "java.util.concurrent", "java.time" };
 
     /**
+     * Default javadoc addresses
+     */
+    public static final String[] JAVADOC_URLS = { "https://docs.oracle.com/javase/8/docs/api/",  "https://hub.spigotmc.org/javadocs/spigot/" };
+
+    /**
      * Placeholder value for {@link net.dv8tion.jda.core.entities.MessageEmbed}
      */
     public static final String LENNY_FACE = "( ͡° ͜ʖ ͡°)";
