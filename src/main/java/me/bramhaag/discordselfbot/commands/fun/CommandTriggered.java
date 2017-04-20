@@ -20,10 +20,15 @@ import com.google.common.base.Preconditions;
 import lombok.NonNull;
 import me.bramhaag.discordselfbot.commands.Command;
 import me.bramhaag.discordselfbot.util.Util;
+import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
 import org.apache.commons.lang3.StringUtils;
+
+import javax.imageio.ImageIO;
+import java.io.File;
+import java.io.IOException;
 
 public class CommandTriggered {
 
@@ -31,7 +36,7 @@ public class CommandTriggered {
     public void execute(@NonNull Message message, @NonNull TextChannel channel, @NonNull String[] args) {
         User user;
         String image = "triggered";
-        String text;
+        final String text;
 
         try {
             user = message.getJDA().getUserById(args[0].replaceAll("[^\\d.]", ""));
@@ -45,7 +50,7 @@ public class CommandTriggered {
             return;
         }
 
-        if(args.length >= 3 || args[1].equalsIgnoreCase("--image") || args[1].equals("-i")) {
+        if(args.length >= 3 && (args[1].equalsIgnoreCase("--image") || args[1].equals("-i"))) {
             image = args[2];
         }
 
@@ -54,9 +59,53 @@ public class CommandTriggered {
         } else if(args.length >= 4 && image != null) {
             text = StringUtils.join(args, 4, args.length);
         }
+        else {
+            text = null;
+        }
 
+        File avatar = new File("avatar_" + user.getId() + "_" + System.currentTimeMillis() + ".png");
+        try {
+            ImageIO.write(Util.getImage(user.getAvatarUrl()), "png", avatar);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
+        File output = new File("triggered_" + user.getId() + "_" + System.currentTimeMillis() + ".gif");
+        File triggered = new File("assets/" + image + ".png");
 
-        Util.generateGif(args, message, "triggered.png");
+        String avatarPath    = avatar.getAbsolutePath();
+        String triggeredPath = triggered.getAbsolutePath();
+
+        String magickPath = "C:/Program Files/ImageMagick-7.0.5-Q16/magick.exe";
+
+        new Thread(() -> {
+            try {
+                //TODO path work pls
+                //EDIT fuck that I'll make a config file
+                Process generateGif = Runtime.getRuntime().exec((magickPath + " convert canvas:none -size 512x680 -resize 512x680! -draw \"image over -60,-60 640,640 \"\"{avatar}\"\"\" -draw \"image over 0,512 0,0 \"\"{triggered}\"\"\" " +
+                        "( canvas:none -size 512x680! -draw \"image over -45,-50 640,640 \"\"{avatar}\"\"\" -draw \"image over -5,512 0,0 \"\"{triggered}\"\"\" ) " +
+                        "( canvas:none -size 512x680! -draw \"image over -50,-45 640,640 \"\"{avatar}\"\"\" -draw \"image over -1,505 0,0 \"\"{triggered}\"\"\" )  " +
+                        "( canvas:none -size 512x680! -draw \"image over -45,-65 640,640 \"\"{avatar}\"\"\" -draw \"image over -5,530 0,0 \"\"{triggered}\"\"\" ) " +
+                        "-layers Optimize -set delay 2 " + output.getPath()).replace("{avatar}", avatarPath).replace("{triggered}", triggeredPath));
+
+                generateGif.waitFor();
+
+                if(text != null) {
+                    Process addText = Runtime.getRuntime().exec(String.format("%s convert %s -font Calibri -pointsize 60 caption:\"%s\" %s", magickPath, output, text, output));
+                    addText.waitFor();
+                }
+
+                message.getChannel().sendFile(output, new MessageBuilder().append(" ").build()).queue(m -> {
+                    message.delete().queue();
+
+                    Preconditions.checkState(avatar.delete(), String.format("File %s not deleted!", avatar.getName()));
+                    Preconditions.checkState(output.delete(), String.format("File %s not deleted!", output.getName()));
+                });
+            } catch (IOException | InterruptedException e) {
+                e.printStackTrace();
+            }
+        }).start();
+
+        message.editMessage("```Generating GIF...```").queue();
     }
 }
