@@ -85,7 +85,8 @@ public class Bot {
                 new CommandHTML(),
                 new CommandSpeedtest(),
                 new CommandJavadoc(),
-                new CommandMildlyInconvenienced()
+                new CommandMildlyInconvenienced(),
+                new CommandLMGTFY()
         );
     }
 

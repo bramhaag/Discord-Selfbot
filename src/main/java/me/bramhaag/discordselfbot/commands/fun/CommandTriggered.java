@@ -16,20 +16,46 @@
 
 package me.bramhaag.discordselfbot.commands.fun;
 
+import com.google.common.base.Preconditions;
 import lombok.NonNull;
 import me.bramhaag.discordselfbot.commands.Command;
 import me.bramhaag.discordselfbot.util.Util;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.core.entities.User;
+import org.apache.commons.lang3.StringUtils;
 
 public class CommandTriggered {
 
     @Command(name = "triggered", aliases = { "trigger", "triggering" }, minArgs = 1)
     public void execute(@NonNull Message message, @NonNull TextChannel channel, @NonNull String[] args) {
-        if(message.getMentionedUsers().size() == 0) {
+        User user;
+        String image = "triggered";
+        String text;
+
+        try {
+            user = message.getJDA().getUserById(args[0].replaceAll("[^\\d.]", ""));
+        } catch (NumberFormatException e) {
+            Util.sendError(message, e.getMessage());
+            return;
+        }
+
+        if(user == null) {
             Util.sendError(message, "Invalid user!");
             return;
         }
+
+        if(args.length >= 3 || args[1].equalsIgnoreCase("--image") || args[1].equals("-i")) {
+            image = args[2];
+        }
+
+        if(args.length >= 2 && image == null) {
+            text = StringUtils.join(args, 1, args.length);
+        } else if(args.length >= 4 && image != null) {
+            text = StringUtils.join(args, 4, args.length);
+        }
+
+
 
         Util.generateGif(args, message, "triggered.png");
     }
