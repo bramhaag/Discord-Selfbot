@@ -33,6 +33,8 @@ public class Constants {
     public static Color color;
     public static Color color2;
 
+    public static final String MAGICK_PATH = "C:/Program Files/ImageMagick-7.0.5-Q16/magick.exe";
+
     /**
      * Default user agent used for connections
      */

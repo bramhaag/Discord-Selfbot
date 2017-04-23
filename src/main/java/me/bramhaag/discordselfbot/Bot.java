@@ -85,8 +85,11 @@ public class Bot {
                 new CommandHTML(),
                 new CommandSpeedtest(),
                 new CommandJavadoc(),
-                new CommandMildlyInconvenienced(),
-                new CommandLMGTFY()
+                new CommandLMGTFY(),
+                new CommandText(),
+                new CommandScreeching(),
+                new CommandEmoji(),
+                new CommandReact()
         );
     }
 
@@ -105,9 +108,10 @@ public class Bot {
         }
 
         try {
-            extract(getClass().getResource("/libs/speedtest.py"),               new File(libsDir, "speedtest.py"));
-            extract(getClass().getResource("/assets/triggered.png"),            new File(assetsDir, "triggered.png"));
-            extract(getClass().getResource("/assets/mildlyinconvenienced.png"), new File(assetsDir, "mildlyinconvenienced.png"));
+            extract(getClass().getResource("/libs/speedtest.py"),                new File(libsDir,   "speedtest.py"));
+            extract(getClass().getResource("/assets/triggered.png"),             new File(assetsDir, "triggered.png"));
+            extract(getClass().getResource("/assets/autistic_screeching.png"),   new File(assetsDir, "autistic_screeching.png"));
+            extract(getClass().getResource("/assets/mildly_inconvenienced.png"), new File(assetsDir, "mildly_inconvenienced.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }

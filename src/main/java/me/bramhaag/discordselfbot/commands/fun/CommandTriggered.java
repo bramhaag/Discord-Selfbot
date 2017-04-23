@@ -18,6 +18,7 @@ package me.bramhaag.discordselfbot.commands.fun;
 
 import com.google.common.base.Preconditions;
 import lombok.NonNull;
+import me.bramhaag.discordselfbot.Constants;
 import me.bramhaag.discordselfbot.commands.Command;
 import me.bramhaag.discordselfbot.util.Util;
 import net.dv8tion.jda.core.MessageBuilder;
@@ -63,11 +64,16 @@ public class CommandTriggered {
             text = null;
         }
 
+        message.editMessage("```Generating GIF...```").queue();
+
         File avatar = new File("avatar_" + user.getId() + "_" + System.currentTimeMillis() + ".png");
         try {
             ImageIO.write(Util.getImage(user.getAvatarUrl()), "png", avatar);
         } catch (IOException e) {
             e.printStackTrace();
+
+            Util.sendError(message, e.getMessage());
+            return;
         }
 
         File output = new File("triggered_" + user.getId() + "_" + System.currentTimeMillis() + ".gif");
@@ -76,13 +82,11 @@ public class CommandTriggered {
         String avatarPath    = avatar.getAbsolutePath();
         String triggeredPath = triggered.getAbsolutePath();
 
-        String magickPath = "C:/Program Files/ImageMagick-7.0.5-Q16/magick.exe";
-
         new Thread(() -> {
             try {
                 //TODO path work pls
                 //EDIT fuck that I'll make a config file
-                Process generateGif = Runtime.getRuntime().exec((magickPath + " convert canvas:none -size 512x680 -resize 512x680! -draw \"image over -60,-60 640,640 \"\"{avatar}\"\"\" -draw \"image over 0,512 0,0 \"\"{triggered}\"\"\" " +
+                Process generateGif = Runtime.getRuntime().exec((Constants.MAGICK_PATH + " convert canvas:none -size 512x680 -resize 512x680! -draw \"image over -60,-60 640,640 \"\"{avatar}\"\"\" -draw \"image over 0,512 0,0 \"\"{triggered}\"\"\" " +
                         "( canvas:none -size 512x680! -draw \"image over -45,-50 640,640 \"\"{avatar}\"\"\" -draw \"image over -5,512 0,0 \"\"{triggered}\"\"\" ) " +
                         "( canvas:none -size 512x680! -draw \"image over -50,-45 640,640 \"\"{avatar}\"\"\" -draw \"image over -1,505 0,0 \"\"{triggered}\"\"\" )  " +
                         "( canvas:none -size 512x680! -draw \"image over -45,-65 640,640 \"\"{avatar}\"\"\" -draw \"image over -5,530 0,0 \"\"{triggered}\"\"\" ) " +
@@ -91,7 +95,7 @@ public class CommandTriggered {
                 generateGif.waitFor();
 
                 if(text != null) {
-                    Process addText = Runtime.getRuntime().exec(String.format("%s convert %s -font Calibri -pointsize 60 caption:\"%s\" %s", magickPath, output, text, output));
+                    Process addText = Runtime.getRuntime().exec(String.format("%s convert %s -font Calibri -pointsize 60 caption:\"%s\" %s", Constants.MAGICK_PATH, output, text, output));
                     addText.waitFor();
                 }
 
@@ -105,7 +109,5 @@ public class CommandTriggered {
                 e.printStackTrace();
             }
         }).start();
-
-        message.editMessage("```Generating GIF...```").queue();
     }
 }

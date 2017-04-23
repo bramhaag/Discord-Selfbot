@@ -16,24 +16,18 @@
 
 package me.bramhaag.discordselfbot.util;
 
-import com.google.common.base.Preconditions;
 import lombok.NonNull;
 import me.bramhaag.discordselfbot.Constants;
 import net.dv8tion.jda.core.MessageBuilder;
-import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
