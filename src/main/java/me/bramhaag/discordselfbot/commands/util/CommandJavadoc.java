@@ -35,9 +35,6 @@ public class CommandJavadoc {
     public void execute(@NonNull Message message, @NonNull TextChannel channel, @NonNull String[] args) {
         String[] parts = args[0].split("\\.");
 
-        //String path = StringUtils.join(Arrays.copyOf(parts, parts.length - 1), "/");
-        //String method = parts[parts.length - 1];
-
         String pack = parts.length >= 3 ? StringUtils.join(Arrays.copyOf(parts, parts.length - 2), "/") + "/" : null;
         String clazz = parts[parts.length - 2];
         String method = args[0].contains(".") ? args[0].substring(args[0].lastIndexOf(".") + 1, args[0].length()) : args[0];
