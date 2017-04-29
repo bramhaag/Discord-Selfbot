@@ -25,15 +25,15 @@ import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
 public class CommandReact {
-    private Character[] regionalIdenticator;
+    private Character[] regionalIndicators;
 
     public CommandReact() {
-        regionalIdenticator = IntStream.rangeClosed((int) '\uDDE6', (int) '\uDDFF')
+        regionalIndicators = IntStream.rangeClosed((int) '\uDDE6', (int) '\uDDFF')
                 .mapToObj(i -> (char) i)
                 .toArray(Character[]::new);
     }
 
-    @Command(name = "react", minArgs = 1)
+    @Command(name = "react", minArgs = 2)
     public void execute(@NonNull Message message, @NonNull TextChannel channel, @NonNull String[] args) {
         channel.getHistoryAround(args[0], 1).queue(history -> {
             Message target = history.getRetrievedHistory().get(0);
@@ -47,8 +47,10 @@ public class CommandReact {
                     continue;
                 }
 
-                target.addReaction('\uD83C' + regionalIdenticator[(int) c - 'a'].toString()).queue();
+                target.addReaction('\uD83C' + regionalIndicators[(int) c - 'a'].toString()).queue();
             }
+
+            message.delete().queue();
         });
     }
 }

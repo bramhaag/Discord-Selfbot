@@ -16,6 +16,7 @@
 
 package me.bramhaag.discordselfbot.commands.admin;
 
+import com.google.common.base.Stopwatch;
 import lombok.NonNull;
 import me.bramhaag.discordselfbot.Constants;
 import me.bramhaag.discordselfbot.commands.Command;
@@ -32,13 +33,16 @@ public class CommandPing {
 
     @Command(name = "ping")
     public void execute(@NonNull Message message, @NonNull TextChannel channel, @NonNull String[] args) {
-        long startMillis = System.currentTimeMillis();
-        message.editMessage("`Waiting...`").queue(m -> m.editMessage(
-                new EmbedBuilder().setTitle(Constants.PONG_EMOTE + " Pong!", null)
-                                  .addField("Response time (Bot)", (System.currentTimeMillis() - startMillis) + " ms", true)
-                                  .addField("Response time (API)", message.getJDA().getPing() + " ms", true)
-                                  .setFooter("Ping | " + Util.generateTimestamp(), null)
-                                  .build())
-                .queue(embed -> embed.delete().queueAfter(Constants.REMOVE_TIME_LONG, TimeUnit.SECONDS)));
+        Stopwatch stopwatch = Stopwatch.createStarted();
+        message.editMessage("`Waiting...`").queue(m -> {
+            stopwatch.stop();
+            m.editMessage(
+                    new EmbedBuilder().setTitle(Constants.PONG_EMOTE + " Pong!", null)
+                            .addField("Response time (Bot)", stopwatch.elapsed(TimeUnit.MILLISECONDS) + " ms", true)
+                            .addField("Response time (API)", message.getJDA().getPing() + " ms", true)
+                            .setFooter("Ping | " + Util.generateTimestamp(), null)
+                            .build())
+                    .queue(embed -> embed.delete().queueAfter(Constants.REMOVE_TIME_LONG, TimeUnit.SECONDS));
+        });
     }
 }
