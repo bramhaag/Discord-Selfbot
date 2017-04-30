@@ -37,9 +37,9 @@ jar {
                 'Main-Class': 'me.bramhaag.discordselfbot.Main',
                 'Version': version,
                 //'Commit': 'git rev-parse --short HEAD'.execute().text.trim(),
-                'Commit': System.getProperty('GIT_COMMIT') == null ? 'N/A (Local Build)' : System.getProperty('GIT_COMMIT').substring(0, 7),
+                'Commit': System.getenv('GIT_COMMIT') == null ? 'N/A (Local Build)' : System.getProperty('GIT_COMMIT').substring(0, 7),
                 'Date': new Date().format("E-MM-yyyy 'at' h:mm a"),
-                'Build': System.getProperty('BUILD_NUMBER') ?: 'N/A (Local build)'
+                'Build': System.getenv('BUILD_NUMBER') ?: 'N/A (Local build)'
         )
     }
 }
