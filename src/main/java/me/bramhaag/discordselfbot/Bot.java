@@ -116,7 +116,7 @@ public class Bot {
         }
 
         try {
-            extract(getClass().getResource("config.json"),                       new File("config.json"));
+            extract(getClass().getResource("/config.json"),                       new File("config.json"));
             extract(getClass().getResource("/libs/speedtest.py"),                new File(libsDir,   "speedtest.py"));
             extract(getClass().getResource("/assets/triggered.png"),             new File(assetsDir, "triggered.png"));
             extract(getClass().getResource("/assets/autistic_screeching.png"),   new File(assetsDir, "autistic_screeching.png"));
