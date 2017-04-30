@@ -31,8 +31,9 @@ public class CommandVersion {
         message.editMessage(new EmbedBuilder()
             .addField("Version",     Manifests.read("Version"), true)
             .addField("Build Date",  Manifests.read("Date"),    true)
+            .addField("Build Id",    Manifests.read("Build"),   true)
             .addField("Commit Hash", Manifests.read("Commit"),  true)
             .setFooter(Util.generateTimestamp(), null)
-        .build());
+        .build()).queue();
     }
 }
