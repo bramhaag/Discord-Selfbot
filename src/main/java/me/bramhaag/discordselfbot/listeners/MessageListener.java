@@ -60,7 +60,7 @@ public class MessageListener extends ListenerAdapter {
     }
 
     private void executeCommand(Message message) {
-        if(!message.getRawContent().startsWith(Bot.PREFIX)) {
+        if(!message.getRawContent().startsWith(Bot.getConfig().getPrefix())) {
             return;
         }
 

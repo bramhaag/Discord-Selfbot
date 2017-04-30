@@ -69,7 +69,7 @@ public class CommandHandler {
         String content = message.getRawContent();
         String[] parts = content.split(" ");
 
-        String name = parts[0].substring(Bot.PREFIX.length()).trim();
+        String name = parts[0].substring(Bot.getConfig().getPrefix().length()).trim();
         String[] args = new String[parts.length - 1];
 
         for(int i = 1; i < parts.length; i++) {

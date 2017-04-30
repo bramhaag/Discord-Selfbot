@@ -17,6 +17,9 @@
 package me.bramhaag.discordselfbot;
 
 import com.google.common.base.Preconditions;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.stream.JsonReader;
 import lombok.Getter;
 import lombok.NonNull;
 import me.bramhaag.discordselfbot.commands.admin.CommandEvaluate;
@@ -36,12 +39,12 @@ import org.apache.commons.io.FileUtils;
 
 import javax.security.auth.login.LoginException;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
 
 public class Bot {
-
-    public static final String PREFIX = "::";
 
     @Getter
     private JDA jda;
@@ -49,23 +52,23 @@ public class Bot {
     @Getter
     private CommandHandler commandHandler;
 
+    @Getter
+    private static Config config;
+
     /**
      * Constructor which starts bot
      *
      * @param token Bot's token
      */
-    Bot(@NonNull String token) {
-        try {
-            this.jda = new JDABuilder(AccountType.CLIENT).setToken(token).setAutoReconnect(true).buildBlocking();
-        } catch (LoginException | InterruptedException | RateLimitedException e) {
-            e.printStackTrace();
-            System.exit(0);
-        }
+    Bot(@NonNull String token) throws FileNotFoundException, LoginException, InterruptedException, RateLimitedException {
+        this.jda = new JDABuilder(AccountType.CLIENT).setToken(token).setAutoReconnect(true).buildBlocking();
+
+        Preconditions.checkState(extractLibs(), "Cannot extract files!");
+        loadConfig();
 
         this.jda.addEventListener(new MessageListener(this));
         this.commandHandler = new CommandHandler();
 
-        Preconditions.checkState(extractLibs(), "Cannot extract files!");
         registerCommands();
     }
 
@@ -95,6 +98,9 @@ public class Bot {
         );
     }
 
+    public void loadConfig() throws FileNotFoundException {
+        config = new Gson().fromJson(new JsonReader(new FileReader("config.json")), Config.class);
+    }
 
     /**
      * Extract files from resources. It won't copy the file if it already exists.
@@ -110,6 +116,7 @@ public class Bot {
         }
 
         try {
+            extract(getClass().getResource("config.json"),                       new File("config.json"));
             extract(getClass().getResource("/libs/speedtest.py"),                new File(libsDir,   "speedtest.py"));
             extract(getClass().getResource("/assets/triggered.png"),             new File(assetsDir, "triggered.png"));
             extract(getClass().getResource("/assets/autistic_screeching.png"),   new File(assetsDir, "autistic_screeching.png"));

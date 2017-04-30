@@ -18,6 +18,7 @@ package me.bramhaag.discordselfbot.commands.fun;
 
 import com.google.common.base.Preconditions;
 import lombok.NonNull;
+import me.bramhaag.discordselfbot.Bot;
 import me.bramhaag.discordselfbot.Constants;
 import me.bramhaag.discordselfbot.commands.Command;
 import me.bramhaag.discordselfbot.util.Util;
@@ -86,7 +87,7 @@ public class CommandTriggered {
             try {
                 //TODO path work pls
                 //EDIT fuck that I'll make a config file
-                Process generateGif = Runtime.getRuntime().exec((Constants.MAGICK_PATH + " convert canvas:none -size 512x680 -resize 512x680! -draw \"image over -60,-60 640,640 \"\"{avatar}\"\"\" -draw \"image over 0,512 0,0 \"\"{triggered}\"\"\" " +
+                Process generateGif = Runtime.getRuntime().exec((Bot.getConfig().getImagemagickPath() + " convert canvas:none -size 512x680 -resize 512x680! -draw \"image over -60,-60 640,640 \"\"{avatar}\"\"\" -draw \"image over 0,512 0,0 \"\"{triggered}\"\"\" " +
                         "( canvas:none -size 512x680! -draw \"image over -45,-50 640,640 \"\"{avatar}\"\"\" -draw \"image over -5,512 0,0 \"\"{triggered}\"\"\" ) " +
                         "( canvas:none -size 512x680! -draw \"image over -50,-45 640,640 \"\"{avatar}\"\"\" -draw \"image over -1,505 0,0 \"\"{triggered}\"\"\" )  " +
                         "( canvas:none -size 512x680! -draw \"image over -45,-65 640,640 \"\"{avatar}\"\"\" -draw \"image over -5,530 0,0 \"\"{triggered}\"\"\" ) " +

@@ -16,23 +16,14 @@
 
 package me.bramhaag.discordselfbot;
 
-import com.google.common.base.Preconditions;
-import net.dv8tion.jda.core.exceptions.RateLimitedException;
+import com.google.gson.annotations.SerializedName;
+import lombok.Data;
 
-import javax.security.auth.login.LoginException;
-import java.io.FileNotFoundException;
+@Data
+public class Config {
 
-public class Main {
+    private String prefix = "::";
 
-    public static Bot bot;
-
-    public static void main(String[] args) {
-        Preconditions.checkArgument(args.length == 1, "Please specify a token");
-
-        try {
-            bot = new Bot(args[0]);
-        } catch (FileNotFoundException | LoginException | RateLimitedException | InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
+    @SerializedName("imagemagick_path")
+    private String imagemagickPath = "magick";
 }
