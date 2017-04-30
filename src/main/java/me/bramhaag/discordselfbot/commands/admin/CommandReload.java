@@ -20,10 +20,12 @@ import lombok.NonNull;
 import me.bramhaag.discordselfbot.Constants;
 import me.bramhaag.discordselfbot.Main;
 import me.bramhaag.discordselfbot.commands.Command;
+import me.bramhaag.discordselfbot.util.Util;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
 
+import java.io.FileNotFoundException;
 import java.util.concurrent.TimeUnit;
 
 public class CommandReload {
@@ -32,7 +34,12 @@ public class CommandReload {
     public void execute(@NonNull Message message, @NonNull TextChannel channel, @NonNull String[] args) {
         Main.bot.getCommandHandler().unregister();
         Main.bot.registerCommands();
+        try {
+            Main.bot.loadConfig();
+        } catch (FileNotFoundException e) {
+            Util.sendError(message, e.getMessage());
+        }
 
-        channel.sendMessage(new MessageBuilder().appendCodeBlock("Reloaded!", "").build()).queue(m -> m.delete().queueAfter(Constants.REMOVE_TIME_SHORT, TimeUnit.SECONDS));
+        message.editMessage(new MessageBuilder().appendCodeBlock("Reloaded!", "").build()).queue(m -> m.delete().queueAfter(Constants.REMOVE_TIME_SHORT, TimeUnit.SECONDS));
     }
 }
