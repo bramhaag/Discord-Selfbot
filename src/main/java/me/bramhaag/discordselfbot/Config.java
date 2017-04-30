@@ -26,4 +26,7 @@ public class Config {
 
     @SerializedName("imagemagick_path")
     private String imagemagickPath = "magick";
+
+    @SerializedName("python_path")
+    private String pythonPath = "python3";
 }

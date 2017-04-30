@@ -17,6 +17,7 @@
 package me.bramhaag.discordselfbot.commands.util;
 
 import lombok.NonNull;
+import me.bramhaag.discordselfbot.Bot;
 import me.bramhaag.discordselfbot.commands.Command;
 import me.bramhaag.discordselfbot.util.Util;
 import net.dv8tion.jda.core.EmbedBuilder;
@@ -46,7 +47,7 @@ public class CommandSpeedtest {
 
 
         try {
-            Process process = new ProcessBuilder("py", "libs/speedtest.py", "--share").start();
+            Process process = new ProcessBuilder(Bot.getConfig().getPythonPath(), "libs/speedtest.py", "--share").start();
 
             BufferedReader stdInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
             while ((s = stdInput.readLine()) != null) {
