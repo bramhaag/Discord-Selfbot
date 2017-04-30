@@ -42,7 +42,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.net.URLDecoder;
 
 public class Bot {
 
@@ -108,15 +110,25 @@ public class Bot {
      * @return {@code true} when all files were copied without issues, {@code false} when something went wrong
      */
     private boolean extractLibs() {
-        File libsDir =   new File("libs");
-        File assetsDir = new File("assets");
+        String path = Bot.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+        String decodedPath;
+        try {
+            decodedPath = URLDecoder.decode(path, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+
+            return false;
+        }
+
+        File libsDir   = new File(decodedPath, "libs");
+        File assetsDir = new File(decodedPath, "assets");
 
         if(!createDir(libsDir) || !createDir(assetsDir)) {
             return false;
         }
 
         try {
-            extract(getClass().getResource("/config.json"),                       new File("config.json"));
+            extract(getClass().getResource("/config.json"),                      new File("config.json"));
             extract(getClass().getResource("/libs/speedtest.py"),                new File(libsDir,   "speedtest.py"));
             extract(getClass().getResource("/assets/triggered.png"),             new File(assetsDir, "triggered.png"));
             extract(getClass().getResource("/assets/autistic_screeching.png"),   new File(assetsDir, "autistic_screeching.png"));
