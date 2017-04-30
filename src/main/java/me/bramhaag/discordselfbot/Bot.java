@@ -110,18 +110,8 @@ public class Bot {
      * @return {@code true} when all files were copied without issues, {@code false} when something went wrong
      */
     private boolean extractLibs() {
-        String path = Bot.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-        String decodedPath;
-        try {
-            decodedPath = URLDecoder.decode(path, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-
-            return false;
-        }
-
-        File libsDir   = new File(decodedPath, "libs");
-        File assetsDir = new File(decodedPath, "assets");
+        File libsDir   = new File("libs");
+        File assetsDir = new File("assets");
 
         if(!createDir(libsDir) || !createDir(assetsDir)) {
             return false;
