@@ -24,6 +24,7 @@ import me.bramhaag.discordselfbot.commands.admin.CommandPing;
 import me.bramhaag.discordselfbot.commands.admin.CommandPrune;
 import me.bramhaag.discordselfbot.commands.admin.CommandReload;
 import me.bramhaag.discordselfbot.commands.CommandHandler;
+import me.bramhaag.discordselfbot.commands.admin.CommandVersion;
 import me.bramhaag.discordselfbot.commands.fun.*;
 import me.bramhaag.discordselfbot.commands.util.*;
 import me.bramhaag.discordselfbot.listeners.MessageListener;
@@ -89,7 +90,8 @@ public class Bot {
                 new CommandText(),
                 new CommandScreeching(),
                 new CommandEmoji(),
-                new CommandReact()
+                new CommandReact(),
+                new CommandVersion()
         );
     }
 
