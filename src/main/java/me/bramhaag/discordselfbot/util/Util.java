@@ -31,10 +31,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-//TODO for meme -> HTML file -> Image -> Send
 public class Util {
 
-    private static SimpleDateFormat dateFormat = new SimpleDateFormat("EE dd-MM-Y H:mm a");
+    private static SimpleDateFormat dateFormat = new SimpleDateFormat("EE dd-MM-Y 'at' H:mm a");
 
     /**
      * Combine {@code args}.

@@ -16,9 +16,9 @@
 
 package me.bramhaag.discordselfbot.commands.admin;
 
-import com.google.common.base.Stopwatch;
 import lombok.NonNull;
 import me.bramhaag.discordselfbot.Constants;
+import me.bramhaag.discordselfbot.evaluate.Evaluate;
 import me.bramhaag.discordselfbot.util.Util;
 import me.bramhaag.discordselfbot.commands.Command;
 import net.dv8tion.jda.core.EmbedBuilder;
@@ -27,70 +27,52 @@ import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
-import java.awt.*;
+import java.util.AbstractMap;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static me.bramhaag.discordselfbot.Constants.color;
 
 public class CommandEvaluate {
-    
-    @NonNull
-    private ScriptEngine engine;
 
-    public CommandEvaluate() {
-        engine = new ScriptEngineManager().getEngineByName("nashorn");
-
-        try {
-            engine.eval(String.format("var imports = new JavaImporter(%s);", StringUtils.join(Constants.EVAL_IMPORTS, ',')));
-        } catch (ScriptException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Command(name = "evaluate", aliases = { "eval", "e" })
+    @Command(name = "evaluate", aliases = { "eval", "e" }, minArgs = 1)
     public void execute(@NonNull Message message, @NonNull TextChannel channel, @NonNull String[] args) {
-        engine.put("jda", message.getJDA());
 
-        engine.put("channel", message.getChannel());
-        engine.put("guild", message.getGuild());
-
-        engine.put("msg", message);
-
-        engine.put("user", message.getAuthor());
-        engine.put("member", message.getGuild().getMember(message.getAuthor()));
-        engine.put("bot", message.getJDA().getSelfUser());
-
-        String input = Util.combineArgs(args);
-        input = input.startsWith("```") && input.endsWith("```") ? input.substring(3, input.length() - 3) : input;
-
-        String output;
-
-        Color color;
-
-        Stopwatch stopwatch;
+        String input;
+        Evaluate.Language language;
 
         try {
-            stopwatch = Stopwatch.createStarted();
-            Object rawOutput = engine.eval(String.format("with (imports) { %s }", input));
-            stopwatch.stop();
-
-            output = rawOutput == null ? "null" : rawOutput.toString();
-
-            color = Color.GREEN;
-        } catch (ScriptException e) {
-            output = e.getMessage();
-            stopwatch = Stopwatch.createUnstarted();
-
-            color = Color.RED;
+            language = Evaluate.Language.valueOf(args[0].toUpperCase());
+            input = Util.combineArgs(Arrays.copyOfRange(args, 1, args.length));
+        } catch (IllegalArgumentException e) {
+            language = Evaluate.Language.JAVASCRIPT;
+            input = Util.combineArgs(args);
         }
+
+        Evaluate.Result result = language.evaluate(Collections.unmodifiableMap(
+                Stream.of(
+                        ent("jda",     message.getJDA()),
+                        ent("channel", message.getChannel()),
+                        ent("guild",   message.getGuild()),
+                        ent("msg",     message),
+                        ent("user",    message.getAuthor()),
+                        ent("member",  message.getGuild().getMember(message.getAuthor())),
+                        ent("bot",     message.getJDA().getSelfUser())
+                ).collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue))), input);
 
         message.editMessage(new EmbedBuilder()
-                .setTitle("Evaluate", null)
-                .addField("Input",  new MessageBuilder().appendCodeBlock(input, "javascript").build().getRawContent(), true)
-                .addField("Output", new MessageBuilder().appendCodeBlock(output, "javascript").build().getRawContent(), true)
-                .setFooter(stopwatch.elapsed(TimeUnit.NANOSECONDS) == 0 ? Constants.CROSS_EMOTE + " An error occurred" : String.format(Constants.CHECK_EMOTE + " Took %d ms (%d ns) to complete | %s", stopwatch.elapsed(TimeUnit.MILLISECONDS), stopwatch.elapsed(TimeUnit.NANOSECONDS), Util.generateTimestamp()), null)
+                .setTitle("Evaluate " + StringUtils.capitalize(language.name().toLowerCase()), null)
+                .addField("Input", new MessageBuilder().appendCodeBlock(input, language.name().toLowerCase()).build().getRawContent(), true)
+                .addField("Output", new MessageBuilder().appendCodeBlock(result.getOutput(), "javascript").build().getRawContent(), true)
+                .setFooter(result.getStopwatch().elapsed(TimeUnit.NANOSECONDS) == 0 ? Constants.CROSS_EMOTE + " An error occurred" : String.format(Constants.CHECK_EMOTE + " Took %d ms (%d ns) to complete | %s", result.getStopwatch().elapsed(TimeUnit.MILLISECONDS), result.getStopwatch().elapsed(TimeUnit.NANOSECONDS), Util.generateTimestamp()), null)
                 .setColor(color)
                 .build()).queue();
+    }
+
+    private static AbstractMap.SimpleEntry<String, Object> ent(String key, Object value) {
+        return new AbstractMap.SimpleEntry<>(key, value);
     }
 }

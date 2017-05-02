@@ -28,6 +28,7 @@ dependencies {
     compile 'org.jsoup:jsoup:1.10.2'
     compile 'com.jcabi:jcabi-manifests:1.1'
     compile 'com.google.code.gson:gson:1.7.2'
+    compile group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.10'
 
     compileOnly "org.projectlombok:lombok:1.16.14"
 }

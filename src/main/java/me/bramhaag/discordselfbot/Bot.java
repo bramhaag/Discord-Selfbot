@@ -18,7 +18,6 @@ package me.bramhaag.discordselfbot;
 
 import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
 import lombok.Getter;
 import lombok.NonNull;
@@ -42,9 +41,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URL;
-import java.net.URLDecoder;
 
 public class Bot {
 
@@ -96,7 +93,8 @@ public class Bot {
                 new CommandScreeching(),
                 new CommandEmoji(),
                 new CommandReact(),
-                new CommandVersion()
+                new CommandVersion(),
+                new CommandChannels()
         );
     }
 
