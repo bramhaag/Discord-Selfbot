@@ -26,6 +26,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Arrays;
 
@@ -37,21 +38,26 @@ public class CommandLMGTFY {
         String lmgtfyURL = "http://lmgtfy.com?q=";
 
         String url;
-        if(args[0].equalsIgnoreCase("--expanded") || args[0].equalsIgnoreCase("-e") && args.length >= 2) {
-            url = lmgtfyURL + URLEncoder.encode(StringUtils.join(Arrays.copyOfRange(args, 1, args.length), " "));
-        }
-        else {
-            Document doc;
-            try {
-                 doc = Jsoup.connect(tinyURL + lmgtfyURL + URLEncoder.encode(StringUtils.join(args, " "))).get();
-            } catch (IOException e) {
-                e.printStackTrace();
 
-                Util.sendError(message, e.getMessage());
-                return;
+        try {
+            if (args[0].equalsIgnoreCase("--expanded") || args[0].equalsIgnoreCase("-e") && args.length >= 2) {
+                url = lmgtfyURL + URLEncoder.encode(StringUtils.join(Arrays.copyOfRange(args, 1, args.length), " "), "UTF-8");
+            } else {
+                Document doc;
+                try {
+                    doc = Jsoup.connect(tinyURL + lmgtfyURL + URLEncoder.encode(StringUtils.join(args, " "), "UTF-8")).get();
+                } catch (IOException e) {
+                    e.printStackTrace();
+
+                    Util.sendError(message, e.getMessage());
+                    return;
+                }
+
+                url = doc.body().text();
             }
-
-            url = doc.body().text();
+        } catch (UnsupportedEncodingException e) {
+            Util.sendError(message, e.getMessage());
+            return;
         }
 
         message.editMessage("<" + url + ">").queue();

@@ -45,7 +45,7 @@ public class CommandEvaluate {
         Evaluate.Language language;
 
         try {
-            language = Evaluate.Language.valueOf(args[0].toUpperCase());
+            language = Evaluate.Language.getLanguage(args[0]);
             input = Util.combineArgs(Arrays.copyOfRange(args, 1, args.length));
         } catch (IllegalArgumentException e) {
             language = Evaluate.Language.JAVASCRIPT;
