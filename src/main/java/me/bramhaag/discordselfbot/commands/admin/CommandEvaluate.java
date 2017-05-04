@@ -27,6 +27,7 @@ import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.script.ScriptEngineManager;
 import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.Collections;
@@ -41,16 +42,15 @@ public class CommandEvaluate {
     @Command(name = "evaluate", aliases = { "eval", "e" }, minArgs = 1)
     public void execute(@NonNull Message message, @NonNull TextChannel channel, @NonNull String[] args) {
 
-        String input;
-        Evaluate.Language language;
+        String input = Util.combineArgs(Arrays.copyOfRange(args, 1, args.length));
+        Evaluate.Language language = Evaluate.Language.getLanguage(args[0]);
 
-        try {
-            language = Evaluate.Language.getLanguage(args[0]);
-            input = Util.combineArgs(Arrays.copyOfRange(args, 1, args.length));
-        } catch (IllegalArgumentException e) {
+        if(language == null) {
             language = Evaluate.Language.JAVASCRIPT;
             input = Util.combineArgs(args);
         }
+
+        input = input.startsWith("```") && input.endsWith("```") ? input.substring(3, input.length() - 3) : input;
 
         Evaluate.Result result = language.evaluate(Collections.unmodifiableMap(
                 Stream.of(

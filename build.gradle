@@ -22,13 +22,22 @@ repositories {
 }
 
 dependencies {
+    //JDA
     compile 'net.dv8tion:JDA:3.0.0_175'
+
+    //Useful libs
     compile 'commons-io:commons-io:2.5'
     compile 'com.google.guava:guava:21.0'
+    compile 'com.google.code.gson:gson:1.7.2'
     compile 'org.jsoup:jsoup:1.10.2'
     compile 'com.jcabi:jcabi-manifests:1.1'
-    compile 'com.google.code.gson:gson:1.7.2'
-    compile group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.10'
+
+
+    //Evaluation
+    compile 'org.codehaus.groovy:groovy-all:2.4.10'
+    compile 'org.scijava:jython-shaded:2.7.0'
+    compile 'org.apache-extras.beanshell:bsh:2.0b6'
+
 
     compileOnly "org.projectlombok:lombok:1.16.14"
 }

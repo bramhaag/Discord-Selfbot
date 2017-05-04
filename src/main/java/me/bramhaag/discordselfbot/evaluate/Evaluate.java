@@ -16,6 +16,8 @@
 
 package me.bramhaag.discordselfbot.evaluate;
 
+import bsh.EvalError;
+import bsh.Interpreter;
 import com.google.common.base.Stopwatch;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
@@ -23,7 +25,9 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NonNull;
 import me.bramhaag.discordselfbot.Constants;
+import net.dv8tion.jda.core.entities.impl.GuildImpl;
 import org.apache.commons.lang3.StringUtils;
+import org.python.util.PythonInterpreter;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -34,7 +38,11 @@ import java.util.Map;
 
 public class Evaluate {
 
-    private static ScriptEngine engine;
+    private static ScriptEngine javascriptEngine;
+
+    private static Interpreter javaInterpreter;
+    private static PythonInterpreter pythonInterpreter;
+
     private static GroovyShell groovyShell;
 
     @Data
@@ -50,22 +58,23 @@ public class Evaluate {
         JAVASCRIPT("js") {
             @Override
             public Result evaluate(Map<String, Object> bindings, String input) {
-                if(engine == null) {
-                    engine = new ScriptEngineManager().getEngineByName("nashorn");
+                if(javascriptEngine == null) {
+                    javascriptEngine = new ScriptEngineManager().getEngineByName("nashorn");
                 }
 
-                bindings.forEach(engine::put);
+                bindings.forEach(javascriptEngine::put);
 
                 String output;
                 Stopwatch stopwatch = null;
 
                 try {
-                    engine.eval(String.format("var imports = new JavaImporter(%s);", StringUtils.join(Constants.EVAL_IMPORTS, ',')));
+                    javascriptEngine.eval(String.format("var imports = new JavaImporter(%s);", StringUtils.join(Constants.EVAL_IMPORTS, ',')));
 
                     stopwatch = Stopwatch.createStarted();
-                    Object rawOutput = engine.eval(String.format("with (imports) { %s }", input));
+                    Object rawOutput = javascriptEngine.eval(String.format("with (imports) { %s }", input));
                     stopwatch.stop();
 
+                    System.out.println(rawOutput);
                     output = rawOutput == null ? "null" : rawOutput.toString();
                 } catch (ScriptException e) {
                     output = e.getMessage();
@@ -99,6 +108,55 @@ public class Evaluate {
                 }
 
                 return new Result(rawOutput == null ? "null" : rawOutput.toString(), stopwatch);
+            }
+        },
+        JAVA {
+            public Result evaluate(Map<String, Object> bindings, String input) {
+                if (javaInterpreter == null) {
+                    javaInterpreter = new Interpreter();
+                }
+
+                Object rawOutput;
+                Stopwatch stopwatch = null;
+
+                try {
+                    for (Map.Entry<String, Object> entry : bindings.entrySet()) {
+                        javaInterpreter.set(entry.getKey(), entry.getValue());
+                    }
+
+                    stopwatch = Stopwatch.createStarted();
+                    rawOutput = javaInterpreter.eval(input);
+                    stopwatch.stop();
+                } catch (EvalError e) {
+                    rawOutput = e.getMessage();
+                }
+
+                return new Result(rawOutput == null ? "null" : rawOutput.toString(), stopwatch);
+            }
+        },
+        PYTHON("py") {
+            @Override
+            public Result evaluate(Map<String, Object> bindings, String input) {
+                if(pythonInterpreter == null) {
+                    pythonInterpreter = new PythonInterpreter();
+                }
+
+                bindings.forEach(pythonInterpreter::set);
+
+                String output;
+                Stopwatch stopwatch = null;
+
+                try {
+                    stopwatch = Stopwatch.createStarted();
+                    Object rawOutput = pythonInterpreter.eval(input).__tojava__(Object.class);
+                    stopwatch.stop();
+
+                    output = rawOutput == null ? "null" : rawOutput.toString();
+                } catch (Exception e) {
+                    output = e.getClass() + ": " + e.getMessage();
+                }
+
+                return new Result(output, stopwatch);
             }
         };
 
