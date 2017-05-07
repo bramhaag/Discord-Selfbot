@@ -32,7 +32,6 @@ dependencies {
     compile 'org.jsoup:jsoup:1.10.2'
     compile 'com.jcabi:jcabi-manifests:1.1'
 
-
     //Evaluation
     compile 'org.codehaus.groovy:groovy-all:2.4.10'
     compile 'org.scijava:jython-shaded:2.7.0'

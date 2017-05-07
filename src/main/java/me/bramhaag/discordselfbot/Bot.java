@@ -98,6 +98,10 @@ public class Bot {
         );
     }
 
+    /**
+     * Load config
+     * @throws FileNotFoundException when file is not found
+     */
     public void loadConfig() throws FileNotFoundException {
         config = new Gson().fromJson(new JsonReader(new FileReader("config.json")), Config.class);
     }
