@@ -17,23 +17,23 @@
 package me.bramhaag.discordselfbot.commands.admin;
 
 import com.jcabi.manifests.Manifests;
-import lombok.NonNull;
-import me.bramhaag.discordselfbot.commands.Command;
-import me.bramhaag.discordselfbot.util.Util;
+import me.bramhaag.bcf.CommandContext;
+import me.bramhaag.bcf.annotations.Command;
+import me.bramhaag.bcf.annotations.CommandBase;
+import me.bramhaag.discordselfbot.util.EmbedUtil;
 import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.TextChannel;
+import org.jetbrains.annotations.NotNull;
 
+@Command("version")
 public class CommandVersion {
 
-    @Command(name = "version")
-    public void execute(@NonNull Message message, @NonNull TextChannel channel, @NonNull String[] args) {
-        message.editMessage(new EmbedBuilder()
-            .addField("Version",     Manifests.read("Version"), true)
-            .addField("Build Date",  Manifests.read("Date"),    true)
-            .addField("Build Id",    Manifests.read("Build"),   true)
-            .addField("Commit Hash", Manifests.read("Commit"),  true)
-            .setFooter(Util.generateTimestamp(), null)
-        .build()).queue();
+    @CommandBase
+    public void execute(@NotNull CommandContext context) {
+        context.getMessage().editMessage(EmbedUtil.addDefaults(new EmbedBuilder()
+                .addField("Version",     Manifests.read("Version"), true)
+                .addField("Build Date",  Manifests.read("Date"),    true)
+                .addField("Build Id",    Manifests.read("Build"),   true)
+                .addField("Commit Hash", Manifests.read("Commit"),  true), "Version", true).build()
+        ).queue();
     }
 }
