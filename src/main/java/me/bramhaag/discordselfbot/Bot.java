@@ -22,6 +22,7 @@ import me.bramhaag.bcf.BCF;
 import me.bramhaag.discordselfbot.commands.admin.CommandPing;
 import me.bramhaag.discordselfbot.commands.admin.CommandPrune;
 import me.bramhaag.discordselfbot.commands.admin.CommandVersion;
+import me.bramhaag.discordselfbot.commands.fun.CommandReact;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
@@ -46,6 +47,7 @@ public class Bot {
                 .setPrefix("::")
                 .register(new CommandPing())
                 .register(new CommandPrune())
-                .register(new CommandVersion());
+                .register(new CommandVersion())
+                .register(new CommandReact());
     }
 }

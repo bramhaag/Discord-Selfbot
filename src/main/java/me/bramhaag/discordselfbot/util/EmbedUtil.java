@@ -26,13 +26,13 @@ public class EmbedUtil {
 
     @NotNull
     public static EmbedBuilder addDefaults(@NotNull EmbedBuilder builder, @Nullable String footer, @Nullable Boolean isSuccessful) {
-        builder.setColor(Constants.PRIMARY_COLOR)
-                .setTimestamp(ZonedDateTime.now());
+        builder.setTimestamp(ZonedDateTime.now());
 
         String finalFooter = "";
 
         if(isSuccessful != null) {
             finalFooter += isSuccessful ? Constants.CHECK_EMOTE : Constants.CROSS_EMOTE;
+            builder.setColor(isSuccessful ? Constants.PRIMARY_COLOR : Constants.ERROR_COLOR);
         }
 
         if(footer != null && !footer.isEmpty()) {
