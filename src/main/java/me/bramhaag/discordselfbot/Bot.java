@@ -20,6 +20,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import me.bramhaag.bcf.BCF;
 import me.bramhaag.discordselfbot.commands.admin.CommandPing;
+import me.bramhaag.discordselfbot.commands.admin.CommandPrune;
 import me.bramhaag.discordselfbot.commands.admin.CommandVersion;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
@@ -44,6 +45,7 @@ public class Bot {
         new BCF(jda)
                 .setPrefix("::")
                 .register(new CommandPing())
+                .register(new CommandPrune())
                 .register(new CommandVersion());
     }
 }

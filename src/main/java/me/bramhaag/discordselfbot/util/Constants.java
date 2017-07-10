@@ -54,5 +54,6 @@ public class Constants {
      */
     public static final String CROSS_EMOTE = "❌";
 
-    public static final Color PRIMARY_COLOR = new Color(255, 70, 100);
+    public static final Color PRIMARY_COLOR = new Color(85, 140, 255);
+    public static final Color ERROR_COLOR = new Color(255, 80, 75);
 }
