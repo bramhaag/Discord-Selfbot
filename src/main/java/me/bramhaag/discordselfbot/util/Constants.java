@@ -30,12 +30,12 @@ public class Constants {
     public static final int REMOVE_TIME_LONG = 10;
 
     /**
-     * Placeholder value for {@link net.dv8tion.jda.core.entities.MessageEmbed}
+     * Placeholder value for {@link net.dv8tion.jda.core.entities.Message}
      */
     public static final String LENNY_FACE = "( ͡° ͜ʖ ͡°)";
 
     /**
-     * Placeholder value for {@link net.dv8tion.jda.core.entities.MessageEmbed}
+     * Placeholder value for {@link net.dv8tion.jda.core.entities.Message}
      */
     public static final String SHRUG = "¯\\_(ツ)_/¯";
 
@@ -56,4 +56,6 @@ public class Constants {
 
     public static final Color PRIMARY_COLOR = new Color(85, 140, 255);
     public static final Color ERROR_COLOR = new Color(255, 80, 75);
+
+    public static final String USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36";
 }

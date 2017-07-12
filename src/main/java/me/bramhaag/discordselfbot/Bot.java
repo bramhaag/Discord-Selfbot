@@ -23,6 +23,8 @@ import me.bramhaag.bcf.BCF;
 import me.bramhaag.discordselfbot.commands.admin.CommandPing;
 import me.bramhaag.discordselfbot.commands.admin.CommandPrune;
 import me.bramhaag.discordselfbot.commands.admin.CommandVersion;
+import me.bramhaag.discordselfbot.commands.fun.CommandScreeching;
+import me.bramhaag.discordselfbot.commands.fun.CommandTriggered;
 import me.bramhaag.discordselfbot.commands.fun.CommandReact;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
@@ -33,7 +35,6 @@ import org.jetbrains.annotations.NotNull;
 import javax.security.auth.login.LoginException;
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.nio.file.Files;
 import java.util.jar.JarFile;
@@ -49,7 +50,7 @@ public class Bot {
      * @param token Bot's token
      */
     Bot(@NonNull String token) throws IOException, LoginException, InterruptedException, RateLimitedException {
-        extractResources();
+        //extractResources();
 
         this.jda = new JDABuilder(AccountType.CLIENT).setToken(token).setAutoReconnect(true).setIdle(true).buildBlocking();
         new BCF(jda)
@@ -57,7 +58,9 @@ public class Bot {
                 .register(new CommandPing())
                 .register(new CommandPrune())
                 .register(new CommandVersion())
-                .register(new CommandReact());
+                .register(new CommandReact())
+                .register(new CommandTriggered())
+                .register(new CommandScreeching());
     }
 
     private void extractResources() throws IOException {

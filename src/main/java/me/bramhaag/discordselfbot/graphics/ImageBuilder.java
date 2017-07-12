@@ -28,24 +28,24 @@ public class ImageBuilder {
 
     private BufferedImage source;
 
-    public ImageBuilder() {}
+    public ImageBuilder(@NotNull File source) throws IOException {
+        this.source = ImageIO.read(source);
+    }
 
     public ImageBuilder(int width, int height) {
         source = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
     }
 
     @NotNull
-    public ImageBuilder setImage(@NotNull File source) throws IOException {
-        this.source = ImageIO.read(source);
+    public ImageBuilder addImage(@NotNull BufferedImage image, int x, int y) throws IOException {
+        source.getGraphics().drawImage(image, x, y, null);
 
         return this;
     }
 
     @NotNull
     public ImageBuilder addImage(@NotNull File file, int x, int y) throws IOException {
-        source.getGraphics().drawImage(ImageIO.read(file), x, y, null);
-
-        return this;
+        return addImage(ImageIO.read(file), x, y);
     }
 
     @NotNull

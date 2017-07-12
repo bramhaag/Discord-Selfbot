@@ -20,12 +20,8 @@ import me.bramhaag.bcf.CommandContext;
 import me.bramhaag.bcf.annotations.Command;
 import me.bramhaag.bcf.annotations.CommandBase;
 import me.bramhaag.bcf.annotations.Optional;
-import me.bramhaag.discordselfbot.util.EmbedUtil;
-import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Message;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
@@ -42,8 +38,8 @@ public class CommandReact {
 
     @CommandBase
     public void execute(CommandContext context, String text, @Optional String messageId, @Optional String channelId, @Optional String guildId) {
-        guildId        =   guildId == null ? context.getGuild().getId()   : guildId;
-        channelId      = channelId == null ? context.getChannel().getId() : channelId;
+        guildId = guildId == null ? context.getGuild().getId()   : guildId;
+        channelId = channelId == null ? context.getChannel().getId() : channelId;
         Message target = messageId == null ?
                 context.getChannel().getHistoryAround(context.getMessage(), 2).complete().getRetrievedHistory().get(1) :
                 context.getJDA().getGuildById(guildId).getTextChannelById(channelId).getHistoryAround(messageId, 1).complete().getRetrievedHistory().get(0);
