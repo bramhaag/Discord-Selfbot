@@ -14,26 +14,25 @@
  * limitations under the License.
  */
 
-package me.bramhaag.discordselfbot;
+package me.bramhaag.discordselfbot.commands.fun;
 
-import com.google.common.base.Preconditions;
-import net.dv8tion.jda.core.exceptions.RateLimitedException;
+import me.bramhaag.bcf.CommandContext;
+import me.bramhaag.bcf.annotations.Command;
+import me.bramhaag.bcf.annotations.CommandBase;
+import me.bramhaag.discordselfbot.graphics.ImageBuilder;
 
-import javax.security.auth.login.LoginException;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.URISyntaxException;
 
-public class Main {
+@Command("image")
+public class CommandImageTest {
 
-    public static Bot bot;
-
-    public static void main(String[] args) {
-        Preconditions.checkArgument(args.length == 1, "Please specify a token");
-
+    @CommandBase
+    public void execute(CommandContext context) {
+        ImageBuilder builder;
         try {
-            bot = new Bot(args[0]);
-        } catch (LoginException | RateLimitedException | InterruptedException | IOException e) {
+            builder = new ImageBuilder(512, 712).addImage(null, 0, 0).addImage(null, 0, 512);
+            context.getChannel().sendFile(builder.create(), "reeeeee", null);
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

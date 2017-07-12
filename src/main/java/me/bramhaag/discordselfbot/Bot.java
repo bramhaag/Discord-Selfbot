@@ -16,6 +16,7 @@
 
 package me.bramhaag.discordselfbot;
 
+import com.google.common.base.Preconditions;
 import lombok.Getter;
 import lombok.NonNull;
 import me.bramhaag.bcf.BCF;
@@ -27,9 +28,15 @@ import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
+import org.jetbrains.annotations.NotNull;
 
 import javax.security.auth.login.LoginException;
-import java.io.FileNotFoundException;
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URLDecoder;
+import java.nio.file.Files;
+import java.util.jar.JarFile;
 
 public class Bot {
 
@@ -41,13 +48,36 @@ public class Bot {
      *
      * @param token Bot's token
      */
-    Bot(@NonNull String token) throws FileNotFoundException, LoginException, InterruptedException, RateLimitedException {
-        this.jda = new JDABuilder(AccountType.CLIENT).setToken(token).setAutoReconnect(true).buildBlocking();
+    Bot(@NonNull String token) throws IOException, LoginException, InterruptedException, RateLimitedException {
+        extractResources();
+
+        this.jda = new JDABuilder(AccountType.CLIENT).setToken(token).setAutoReconnect(true).setIdle(true).buildBlocking();
         new BCF(jda)
                 .setPrefix("::")
                 .register(new CommandPing())
                 .register(new CommandPrune())
                 .register(new CommandVersion())
                 .register(new CommandReact());
+    }
+
+    private void extractResources() throws IOException {
+        File assets = new File("assets");
+        if(!assets.exists()) Preconditions.checkState(assets.mkdir(), "Cannot create assets folder!");
+
+        new JarFile(URLDecoder.decode(getClass().getProtectionDomain().getCodeSource().getLocation().getPath(), "UTF-8")).stream()
+                .filter(entry -> entry.getName().matches("assets/.+"))
+                .forEach(entry -> copy(entry.getName()));
+    }
+
+    private void copy(@NotNull String name) {
+        File destination = new File(name);
+        if(destination.exists())
+            return;
+
+        try {
+            Files.copy(getClass().getResourceAsStream("/" + name), destination.toPath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
