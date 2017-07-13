@@ -50,7 +50,7 @@ public class Bot {
      * @param token Bot's token
      */
     Bot(@NonNull String token) throws IOException, LoginException, InterruptedException, RateLimitedException {
-        //extractResources();
+        extractResources();
 
         this.jda = new JDABuilder(AccountType.CLIENT).setToken(token).setAutoReconnect(true).setIdle(true).buildBlocking();
         new BCF(jda)

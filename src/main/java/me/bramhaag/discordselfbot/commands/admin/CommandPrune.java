@@ -19,10 +19,13 @@ package me.bramhaag.discordselfbot.commands.admin;
 import me.bramhaag.bcf.CommandContext;
 import me.bramhaag.bcf.annotations.Command;
 import me.bramhaag.bcf.annotations.CommandBase;
+import me.bramhaag.discordselfbot.util.Constants;
 import me.bramhaag.discordselfbot.util.EmbedUtil;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Message;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.concurrent.TimeUnit;
 
 @Command("prune")
 public class CommandPrune {
@@ -33,10 +36,11 @@ public class CommandPrune {
             Message[] messages = history.parallelStream().filter(m -> m.getAuthor().getId().equals(context.getAuthor().getId())).toArray(Message[]::new);
             for (int i = 0; i < messages.length; i++) {
                 if (i + 1 == messages.length) {
-                    messages[i].delete().queue(ignored -> context.getChannel().sendMessage(
+                    messages[i].delete().queue(v -> context.getChannel().sendMessage(
                             EmbedUtil.addDefaults(new EmbedBuilder()
                                     .setTitle("Prune")
-                                    .setDescription("Prune completed! Deleted " + (messages.length - 1) + " messages"), "Prune", true).build()).queue());
+                                    .setDescription("Prune completed! Deleted " + (messages.length - 1) + " messages"), "Prune", true).build())
+                            .queue(m -> m.delete().queueAfter(Constants.REMOVE_TIME_SHORT, TimeUnit.SECONDS)));
 
                     return;
                 }

@@ -16,8 +16,6 @@
 
 package me.bramhaag.discordselfbot.util;
 
-import me.bramhaag.discordselfbot.Bot;
-import me.bramhaag.discordselfbot.Main;
 import net.dv8tion.jda.core.entities.User;
 
 import javax.imageio.ImageIO;
@@ -31,7 +29,6 @@ public class ImageUtil {
 
     public static BufferedImage getAvatar(User user) throws IOException {
         String url = user.getAvatarUrl() == null ? user.getDefaultAvatarUrl() : user.getAvatarUrl();
-
         HttpURLConnection connection = (HttpURLConnection)new URL(url).openConnection();
         connection.setRequestProperty("User-Agent", Constants.USER_AGENT);
 
@@ -40,7 +37,7 @@ public class ImageUtil {
 
     public static BufferedImage resize(BufferedImage source, int width, int height) {
         Image scaled = source.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-        BufferedImage resized = new BufferedImage(width, height, source.getType());
+        BufferedImage resized = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 
         Graphics2D g = resized.createGraphics();
         g.drawImage(scaled, 0, 0,null);

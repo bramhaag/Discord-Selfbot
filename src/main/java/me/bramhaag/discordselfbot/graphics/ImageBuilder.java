@@ -54,4 +54,9 @@ public class ImageBuilder {
         ImageIO.write(source, "png", out);
         return out.toByteArray();
     }
+
+    @NotNull
+    public BufferedImage createImage() {
+        return source;
+    }
 }
