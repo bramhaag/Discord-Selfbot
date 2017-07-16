@@ -42,7 +42,7 @@ public class CommandTriggered {
         ).queue();
 
         try {
-            BufferedImage avatar = ImageUtil.resize(ImageUtil.getAvatar(user), 640, 640);
+            BufferedImage avatar = ImageUtil.resize(ImageUtil.getAvatar(user), BufferedImage.TYPE_INT_ARGB, 640, 640);
             GifBuilder builder = new GifBuilder(25)
                     .addFrame(offsetImage(avatar, -60, -60, 0, 512))
                     .addFrame(offsetImage(avatar, -45, -50, -5, 512))
@@ -55,7 +55,7 @@ public class CommandTriggered {
     }
 
     private BufferedImage offsetImage(BufferedImage avatar, int xAvatar, int yAvatar, int xTriggered, int yTriggered) throws IOException {
-        ImageBuilder builder = new ImageBuilder(512, 680).addImage(avatar, xAvatar, yAvatar).addImage(new File("assets/triggered.png"), xTriggered, yTriggered);
+        ImageBuilder builder = new ImageBuilder(512, 680, BufferedImage.TYPE_INT_ARGB).addImage(avatar, xAvatar, yAvatar).addImage(new File("assets/triggered.png"), xTriggered, yTriggered);
         return builder.createImage();
     }
 }

@@ -41,8 +41,8 @@ public class CommandRetarded {
         ).queue();
 
         try {
-            BufferedImage avatar = ImageUtil.resize(ImageUtil.getAvatar(user), 128, 128);
-            ImageBuilder builder = new ImageBuilder(new File("assets/retarded.png")).addImage(avatar, 400, 150).addText(String.join(" ", text), Color.BLACK, 30, 350, 125);
+            BufferedImage avatar = ImageUtil.resize(ImageUtil.getAvatar(user), BufferedImage.TYPE_INT_ARGB, 128, 128);
+            ImageBuilder builder = new ImageBuilder(new File("assets/retarded.png"), BufferedImage.TYPE_INT_ARGB).addImage(avatar, 400, 150).addText(String.join(" ", text), Color.BLACK, 30, 350, 125);
             context.getChannel().sendFile(builder.create(), "retarded.png", null).queue(ignored -> context.getMessage().delete().queue());
         } catch (IOException e) {
             e.printStackTrace();

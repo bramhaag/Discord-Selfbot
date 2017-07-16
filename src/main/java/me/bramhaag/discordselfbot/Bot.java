@@ -23,6 +23,7 @@ import me.bramhaag.bcf.BCF;
 import me.bramhaag.discordselfbot.commands.admin.CommandPing;
 import me.bramhaag.discordselfbot.commands.admin.CommandPrune;
 import me.bramhaag.discordselfbot.commands.admin.CommandVersion;
+import me.bramhaag.discordselfbot.commands.fun.CommandEmoji;
 import me.bramhaag.discordselfbot.commands.fun.CommandMock;
 import me.bramhaag.discordselfbot.commands.fun.CommandRetarded;
 import me.bramhaag.discordselfbot.commands.fun.CommandScreeching;
@@ -66,6 +67,7 @@ public class Bot {
                 .register(new CommandScreeching())
                 .register(new CommandRetarded())
                 .register(new CommandMock())
+                .register(new CommandEmoji())
                 .register(new CommandThinking());
     }
 

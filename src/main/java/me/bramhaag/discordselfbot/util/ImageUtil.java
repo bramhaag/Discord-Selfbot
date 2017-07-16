@@ -36,9 +36,9 @@ public class ImageUtil {
         return ImageIO.read(connection.getInputStream());
     }
 
-    public static BufferedImage resize(BufferedImage source, int width, int height) {
+    public static BufferedImage resize(BufferedImage source, int type, int width, int height) {
         Image scaled = source.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-        BufferedImage resized = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        BufferedImage resized = new BufferedImage(width, height, type);
 
         Graphics2D g = resized.createGraphics();
         g.drawImage(scaled, 0, 0,null);
@@ -47,8 +47,8 @@ public class ImageUtil {
         return resized;
     }
 
-    public static BufferedImage makeCircular(BufferedImage image, int size) {
-        BufferedImage circle = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
+    public static BufferedImage makeCircular(BufferedImage image, int type, int size) {
+        BufferedImage circle = new BufferedImage(size, size, type);
 
         Graphics2D g = circle.createGraphics();
         g.clip(new Ellipse2D.Float(0, 0, size, size));

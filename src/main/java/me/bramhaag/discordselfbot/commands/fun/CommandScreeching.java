@@ -40,7 +40,7 @@ public class CommandScreeching {
         ).queue();
 
         try {
-            BufferedImage avatar = ImageUtil.resize(ImageUtil.getAvatar(user), 64, 64);
+            BufferedImage avatar = ImageUtil.resize(ImageUtil.getAvatar(user), BufferedImage.TYPE_INT_ARGB, 64, 64);
             ImageBuilder builder = new ImageBuilder(new File("assets/autistic_screeching.png")).addImage(avatar, 95, 55);
             context.getChannel().sendFile(builder.create(), "autistic_screeching.png", null).queue(ignored -> context.getMessage().delete().queue());
         } catch (IOException e) {

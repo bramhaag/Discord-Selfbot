@@ -49,8 +49,8 @@ public class CommandMock {
         input = sb.toString();
 
         try {
-            BufferedImage avatar = ImageUtil.resize(ImageUtil.getAvatar(user), 300, 300);
-            ImageBuilder builder = new ImageBuilder(678, 778)
+            BufferedImage avatar = ImageUtil.resize(ImageUtil.getAvatar(user), BufferedImage.TYPE_INT_ARGB, 300, 300);
+            ImageBuilder builder = new ImageBuilder(678, 778, BufferedImage.TYPE_INT_ARGB)
                     .fillRect(Color.WHITE, 0, 0, 678, 100)
                     .addImage(new File("assets/spongemock.jpg"), 0, 100)
                     .addImage(avatar, 75, 300)

@@ -40,8 +40,8 @@ public class CommandThinking {
         ).queue();
 
         try {
-            BufferedImage avatar = ImageUtil.resize(ImageUtil.getAvatar(user), 640, 640);
-            ImageBuilder builder = new ImageBuilder(800, 800).addImage(ImageUtil.makeCircular(avatar, 625), (800-640)/2, (800-640)/2).addImage(new File("assets/thinking.png"), 0, 0);
+            BufferedImage avatar = ImageUtil.resize(ImageUtil.getAvatar(user), BufferedImage.TYPE_INT_ARGB,640, 640);
+            ImageBuilder builder = new ImageBuilder(800, 800, BufferedImage.TYPE_INT_ARGB).addImage(ImageUtil.makeCircular(avatar, BufferedImage.TYPE_INT_ARGB, 625), (800-640)/2, (800-640)/2).addImage(new File("assets/thinking.png"), 0, 0);
             context.getChannel().sendFile(builder.create(), "thinking.png", null).queue(ignored -> context.getMessage().delete().queue());
         } catch (IOException e) {
             e.printStackTrace();

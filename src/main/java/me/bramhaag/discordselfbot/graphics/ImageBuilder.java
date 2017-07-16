@@ -29,21 +29,20 @@ public class ImageBuilder {
 
     private BufferedImage source;
 
-    public ImageBuilder(@NotNull File source) throws IOException {
+    public ImageBuilder(@NotNull File source, int type) throws IOException {
         BufferedImage image = ImageIO.read(source);
-        if(image.getType() == BufferedImage.TYPE_INT_RGB || image.getType() == BufferedImage.TYPE_INT_ARGB) {
-            this.source = image;
-            return;
-        }
-
-        BufferedImage converted = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        BufferedImage converted = new BufferedImage(image.getWidth(), image.getHeight(), type);
         converted.getGraphics().drawImage(image, 0, 0, null);
 
         this.source = converted;
     }
 
-    public ImageBuilder(int width, int height) {
-        source = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+    public ImageBuilder(@NotNull File source) throws IOException {
+        this.source = ImageIO.read(source);
+    }
+
+    public ImageBuilder(int width, int height, int type) {
+        source = new BufferedImage(width, height, type);
     }
 
     @NotNull
