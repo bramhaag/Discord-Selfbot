@@ -20,6 +20,7 @@ import net.dv8tion.jda.core.entities.User;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -44,5 +45,15 @@ public class ImageUtil {
         g.dispose();
 
         return resized;
+    }
+
+    public static BufferedImage makeCircular(BufferedImage image, int size) {
+        BufferedImage circle = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
+
+        Graphics2D g = circle.createGraphics();
+        g.clip(new Ellipse2D.Float(0, 0, size, size));
+        g.drawImage(image, 0, 0, null);
+
+        return circle;
     }
 }

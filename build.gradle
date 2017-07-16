@@ -27,7 +27,7 @@ dependencies {
     compile 'com.google.guava:guava:21.0'
     compile 'com.jcabi:jcabi-manifests:1.1'
 
-    compile 'me.bramhaag:bcf:0.1'
+    compile 'me.bramhaag:bcf:0.2.3'
 
     compileOnly 'org.jetbrains:annotations:15.0'
     compileOnly 'org.projectlombok:lombok:1.16.14'
