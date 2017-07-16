@@ -20,8 +20,10 @@ import com.google.common.base.Preconditions;
 import lombok.Getter;
 import lombok.NonNull;
 import me.bramhaag.bcf.BCF;
+import me.bramhaag.discordselfbot.commands.admin.CommandEvaluate;
 import me.bramhaag.discordselfbot.commands.admin.CommandPing;
 import me.bramhaag.discordselfbot.commands.admin.CommandPrune;
+import me.bramhaag.discordselfbot.commands.admin.CommandSpeedtest;
 import me.bramhaag.discordselfbot.commands.admin.CommandVersion;
 import me.bramhaag.discordselfbot.commands.fun.CommandEmoji;
 import me.bramhaag.discordselfbot.commands.fun.CommandMock;
@@ -59,16 +61,18 @@ public class Bot {
         this.jda = new JDABuilder(AccountType.CLIENT).setToken(token).setAutoReconnect(true).setIdle(true).buildBlocking();
         new BCF(jda)
                 .setPrefix("::")
-                .register(new CommandPing())
-                .register(new CommandPrune())
-                .register(new CommandVersion())
-                .register(new CommandReact())
-                .register(new CommandTriggered())
-                .register(new CommandScreeching())
-                .register(new CommandRetarded())
-                .register(new CommandMock())
-                .register(new CommandEmoji())
-                .register(new CommandThinking());
+                .register(new CommandEvaluate(),
+                        new CommandSpeedtest(),
+                        new CommandPing(),
+                        new CommandPrune(),
+                        new CommandVersion(),
+                        new CommandReact(),
+                        new CommandTriggered(),
+                        new CommandScreeching(),
+                        new CommandRetarded(),
+                        new CommandMock(),
+                        new CommandEmoji(),
+                        new CommandThinking());
     }
 
     private void extractResources() throws IOException {

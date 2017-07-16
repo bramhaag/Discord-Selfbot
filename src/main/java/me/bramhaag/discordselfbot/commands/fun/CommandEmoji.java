@@ -23,6 +23,7 @@ import me.bramhaag.bcf.annotations.Optional;
 import net.dv8tion.jda.core.entities.Message;
 
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Command("emoji")

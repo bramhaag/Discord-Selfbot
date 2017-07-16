@@ -35,7 +35,7 @@ import java.util.Random;
 public class CommandMock {
 
     @CommandBase
-    public void execute(CommandContext context, User user, String[] text) {
+    public void execute(CommandContext context, String[] text) {
         context.getMessage().editMessage(
                 EmbedUtil.addDefaults(new EmbedBuilder().setTitle("Spongemock!")
                         .setDescription("GEneRATiNg iMaGE..."), "Spongemock", null).build()
@@ -49,11 +49,9 @@ public class CommandMock {
         input = sb.toString();
 
         try {
-            BufferedImage avatar = ImageUtil.resize(ImageUtil.getAvatar(user), BufferedImage.TYPE_INT_ARGB, 300, 300);
             ImageBuilder builder = new ImageBuilder(678, 778, BufferedImage.TYPE_INT_ARGB)
                     .fillRect(Color.WHITE, 0, 0, 678, 100)
                     .addImage(new File("assets/spongemock.jpg"), 0, 100)
-                    .addImage(avatar, 75, 300)
                     .addText(input, Color.BLACK, 50,25, 60);
             context.getChannel().sendFile(builder.create(), "spongemock.png", null).queue(ignored -> context.getMessage().delete().queue());
         } catch (IOException e) {

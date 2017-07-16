@@ -55,7 +55,7 @@ public class CommandTriggered {
     }
 
     private BufferedImage offsetImage(BufferedImage avatar, int xAvatar, int yAvatar, int xTriggered, int yTriggered) throws IOException {
-        ImageBuilder builder = new ImageBuilder(512, 680, BufferedImage.TYPE_INT_ARGB).addImage(avatar, xAvatar, yAvatar).addImage(new File("assets/triggered.png"), xTriggered, yTriggered);
+        ImageBuilder builder = new ImageBuilder(512, 680, BufferedImage.TYPE_INT_RGB).addImage(avatar, xAvatar, yAvatar).addImage(new File("assets/triggered.png"), xTriggered, yTriggered);
         return builder.createImage();
     }
 }

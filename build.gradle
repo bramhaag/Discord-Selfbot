@@ -26,6 +26,7 @@ dependencies {
     compile 'net.dv8tion:JDA:3.1.1_220'
     compile 'com.google.guava:guava:21.0'
     compile 'com.jcabi:jcabi-manifests:1.1'
+    compile 'fr.bmartel:jspeedtest:1.30'
 
     compile 'me.bramhaag:bcf:0.2.3'
 
