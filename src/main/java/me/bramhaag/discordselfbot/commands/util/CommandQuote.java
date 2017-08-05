@@ -14,44 +14,35 @@
  * limitations under the License.
  */
 
-package me.bramhaag.discordselfbot.commands.fun;
+package me.bramhaag.discordselfbot.commands.util;
 
 import me.bramhaag.bcf.CommandContext;
 import me.bramhaag.bcf.annotations.Command;
 import me.bramhaag.bcf.annotations.CommandBase;
 import me.bramhaag.bcf.annotations.Optional;
+import me.bramhaag.discordselfbot.util.Constants;
+import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Message;
 
-import java.util.regex.Pattern;
-import java.util.stream.IntStream;
+import java.time.ZonedDateTime;
 
-@Command("react")
-public class CommandReact {
-
-    private Character[] regionalIndicators;
-
-    public CommandReact() {
-        regionalIndicators = IntStream.rangeClosed((int) '\uDDE6', (int) '\uDDFF')
-                .mapToObj(i -> (char) i)
-                .toArray(Character[]::new);
-    }
+@Command("quote")
+public class CommandQuote {
 
     @CommandBase
-    public void execute(CommandContext context, String text, @Optional String messageId, @Optional String channelId, @Optional String guildId) {
-        guildId = guildId == null ? context.getGuild().getId()   : guildId;
+    public void execute(CommandContext context, @Optional String messageId, @Optional String channelId, @Optional String guildId) {
+        guildId = guildId == null ? context.getGuild().getId() : guildId;
         channelId = channelId == null ? context.getChannel().getId() : channelId;
         Message target = messageId == null ?
                 context.getChannel().getHistoryAround(context.getMessage(), 2).complete().getRetrievedHistory().get(1) :
                 context.getJda().getGuildById(guildId).getTextChannelById(channelId).getHistoryAround(messageId, 1).complete().getRetrievedHistory().get(0);
 
-        context.getMessage().delete().queue();
-
-        for(Character c : text.toLowerCase().toCharArray()) {
-            if(!Pattern.matches("[a-zA-Z]", c.toString())) {
-                continue;
-            }
-
-            target.addReaction('\uD83C' + regionalIndicators[(int) c - 'a'].toString()).queue();
-        }
+        context.getMessage().editMessage(new EmbedBuilder()
+                .setColor(Constants.PRIMARY_COLOR)
+                .setDescription(target.getRawContent())
+                .setFooter(target.getAuthor().getName(), target.getAuthor().getEffectiveAvatarUrl())
+                .setTimestamp(ZonedDateTime.now())
+                .build()
+        ).queue();
     }
 }

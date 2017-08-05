@@ -14,27 +14,23 @@
  * limitations under the License.
  */
 
-package me.bramhaag.discordselfbot.commands.admin;
+package me.bramhaag.discordselfbot.commands.util;
 
 import me.bramhaag.bcf.CommandContext;
 import me.bramhaag.bcf.annotations.Command;
 import me.bramhaag.bcf.annotations.CommandBase;
-import me.bramhaag.discordselfbot.speedtest.Speedtest;
 import me.bramhaag.discordselfbot.util.EmbedUtil;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.MessageEmbed;
 import org.jetbrains.annotations.NotNull;
-import org.xml.sax.SAXException;
 
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
-
 
 @Command("speedtest")
 public class CommandSpeedtest {
 
     @CommandBase
-    public void execute(@NotNull CommandContext context) {
+    public void execute(@NotNull CommandContext context) throws IOException {
         MessageEmbed embed = EmbedUtil.addDefaults(new EmbedBuilder()
                 .setTitle("Speedtest")
                 .addField("Ping", "Waiting...", true)
@@ -43,10 +39,14 @@ public class CommandSpeedtest {
         ).build();
 
         context.getMessage().editMessage(embed).queue();
-        try {
-            Speedtest.getConfig();
-        } catch (SAXException | ParserConfigurationException | IOException e) {
-            e.printStackTrace();
-        }
+
+//        Speedtest speedtest = new Speedtest();
+//        try {
+//            Speedtest.Server s = speedtest.getClosestServer();
+//            System.out.printf("%s, (%s, %s)", s.getId(), s.getLatitude(), s.getLongitude());
+//            speedtest.testDownload(aLong -> System.out.println(aLong + " b/s"));
+//        } catch (ParserConfigurationException | SAXException | IOException e) {
+//            e.printStackTrace();
+//        }
     }
 }

@@ -93,6 +93,6 @@ public class CommandEvaluate {
                 .setTitle("Evaluate", null)
                 .addField("Input",  new MessageBuilder().appendCodeBlock(input, "javascript").build().getRawContent(), true)
                 .addField("Output", new MessageBuilder().appendCodeBlock(output, "javascript").build().getRawContent(), true)
-                .setColor(color), String.format("Took %d ms (%d ns) to complete", stopwatch.elapsed(TimeUnit.MILLISECONDS), stopwatch.elapsed(TimeUnit.NANOSECONDS)), stopwatch.elapsed(TimeUnit.NANOSECONDS) == 0).build()).queue();
+                .setColor(color), String.format("Took %d ms (%d ns) to complete", stopwatch.elapsed(TimeUnit.MILLISECONDS), stopwatch.elapsed(TimeUnit.NANOSECONDS)), stopwatch.elapsed(TimeUnit.NANOSECONDS) != 0).build()).queue();
     }
 }

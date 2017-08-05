@@ -1,5 +1,5 @@
 group 'me.bramhaag'
-version '1.0-SNAPSHOT'
+version '0.0.2-SNAPSHOT'
 
 apply plugin: 'java'
 apply plugin: 'com.github.johnrengelman.shadow'
@@ -23,10 +23,12 @@ repositories {
 }
 
 dependencies {
-    compile 'net.dv8tion:JDA:3.1.1_220'
+    compile 'net.dv8tion:JDA:3.2.0_235'
     compile 'com.google.guava:guava:21.0'
     compile 'com.jcabi:jcabi-manifests:1.1'
-    compile 'fr.bmartel:jspeedtest:1.30'
+    compile 'org.reflections:reflections:0.9.11'
+
+    compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.3'
 
     compile 'me.bramhaag:bcf:0.2.3'
 

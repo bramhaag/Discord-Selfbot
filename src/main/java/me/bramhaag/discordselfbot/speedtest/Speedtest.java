@@ -16,23 +16,53 @@
 
 package me.bramhaag.discordselfbot.speedtest;
 
+import com.google.common.base.Charsets;
+import com.google.common.base.Stopwatch;
+import com.google.common.io.CharStreams;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import me.bramhaag.discordselfbot.util.StringUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 public class Speedtest {
 
     private final static String SPEEDTEST_CONFIG = "https://www.speedtest.net/speedtest-config.php";
+    private final static String SPEEDTEST_API = "https://www.speedtest.net/api/api.php";
+    private final static String SPEEDTEST_SERVERS = "http://c.speedtest.net/speedtest-servers.php";
+    private final static String SPEEDTEST_SERVERS_STATIC = "http://c.speedtest.net/speedtest-servers-static.php";
 
     private Config config;
+    private List<Server> servers = new ArrayList<>();
+
+    private long ping;
+    private long download;
+    private long upload;
+
+    private long bytesReceived;
+    private long bytesSent;
+
+    private String serverId;
 
     public Config getConfig() {
         if(config == null) {
@@ -46,13 +76,162 @@ public class Speedtest {
         return this.config;
     }
 
-    public void getServers() {
+    public List<Server> getServers() throws IOException, ParserConfigurationException, SAXException {
+        if(!this.servers.isEmpty())
+            return this.servers;
 
+        getServersFromUrl(SPEEDTEST_SERVERS);
+        getServersFromUrl(SPEEDTEST_SERVERS_STATIC);
+
+        return this.servers;
     }
 
-    public String getShareUrl() {
-        //https://github.com/sivel/speedtest-cli/blob/master/speedtest.py#L653-L670
-        return null;
+    private void getServersFromUrl(String url) throws ParserConfigurationException, IOException, SAXException {
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        DocumentBuilder db = dbf.newDocumentBuilder();
+        Document doc = db.parse(new URL(url).openStream());
+
+        NodeList xmlServers = doc.getElementsByTagName("server");
+        for(int i = 0; i < xmlServers.getLength(); i++) {
+            Node server = xmlServers.item(i);
+            NamedNodeMap attributes = server.getAttributes();
+
+            Node id = attributes.getNamedItem("id");
+            if(id == null || Arrays.asList(getConfig().getIgnoreServers()).contains(id.getNodeValue())) {
+                continue;
+            }
+
+            float lat = Float.valueOf(attributes.getNamedItem("lat").getNodeValue());
+            float lon = Float.valueOf(attributes.getNamedItem("lon").getNodeValue());
+
+            this.servers.add(new Server(id.getNodeValue(), attributes.getNamedItem("url").getNodeValue(), lat, lon));
+        }
+    }
+
+    public Server getClosestServer() throws ParserConfigurationException, SAXException, IOException {
+        float lat = Float.valueOf(getConfig().getClient().getNamedItem("lat").getNodeValue());
+        float lon = Float.valueOf(getConfig().getClient().getNamedItem("lon").getNodeValue());
+
+        float lowestDistance = -1;
+        Server server = null;
+        for(Server s : getServers()) {
+            float distance = distance(s.getLatitude(), s.getLongitude(), lat, lon);
+
+            if(lowestDistance == -1) {
+                server = s;
+                lowestDistance = distance;
+                continue;
+            }
+
+            if(lowestDistance > distance) {
+                server = s;
+                lowestDistance = distance;
+            }
+        }
+
+        return server;
+    }
+
+    public void testDownload(Consumer<Long> callback) throws IOException, SAXException, ParserConfigurationException {
+        List<String> urls = new ArrayList<>();
+
+        for(long size : getConfig().getDownloadSizes()) {
+            for(int i = 0;  i < getConfig().downloadCount; i++) {
+                urls.add(String.format("%s/random%sx%s.jpg", getClosestServer().getUrl(), size, size));
+            }
+        }
+
+        new Thread(() -> {
+            long received = 0;
+            Stopwatch stopwatch = Stopwatch.createUnstarted();
+            for (int i = 0; i < urls.size(); i++) {
+                if(i == 0) stopwatch.start();
+                String url = urls.get(i);
+
+                try {
+                    HttpURLConnection connection = createConnection(url, null, String.valueOf(i));
+                    received = connection.getContentLengthLong();
+
+                    connection.getInputStream();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            stopwatch.stop();
+
+            callback.accept(received / stopwatch.elapsed(TimeUnit.SECONDS));
+        }).start();
+
+    }
+    public String getShareUrl() throws IOException, NoSuchAlgorithmException {
+        String[] data = new String[] {
+                "recommendedserverid=" + serverId,
+                "ping=" + ping,
+                "screenresolution=",
+                "promo=",
+                "download=" + download,
+                "screendpi=",
+                "upload=" + upload,
+                "testmethod=http",
+                "hash=" + StringUtil.toMD5Hex(String.format("%s-%s-%s-%s", ping, upload, download, "297aae72")),
+                "touchscreenmode=none",
+                "startmode=pingselect",
+                "accuracy=1",
+                "bytesreceived=" + bytesReceived,
+                "bytessent=" + bytesSent,
+                "serverid=" + serverId
+        };
+
+        HttpURLConnection connection = createConnection(SPEEDTEST_API, data);
+
+        //TODO checks
+
+        return CharStreams.toString(new InputStreamReader(
+                connection.getInputStream(), Charsets.UTF_8));
+    }
+
+    private HttpURLConnection createConnection(String url, String... data) throws IOException {
+        return createConnection(url, data, null);
+    }
+
+    private HttpURLConnection createConnection(String url, String[] data, String bump) throws IOException {
+        URL u = new URL(String.format("%s?x=%s.%s",url, System.currentTimeMillis(), bump == null ? "" : bump));
+        System.out.println(u);
+        HttpURLConnection connection = (HttpURLConnection) u.openConnection();
+
+        connection.setRequestMethod("POST");
+
+        connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+        connection.setRequestProperty("charset", "utf-8");
+        connection.setRequestProperty("Referer", "http://c.speedtest.net/flash/speedtest.swf");
+
+        connection.setDoOutput(true);
+        connection.setUseCaches(false);
+
+        if(data != null) {
+            String stringData = String.join("&", data);
+            connection.setRequestProperty("Content-Length", Integer.toString(stringData.length()));
+
+            try (DataOutputStream wr = new DataOutputStream(connection.getOutputStream())) {
+                wr.write(stringData.getBytes());
+            }
+        }
+
+        return connection;
+    }
+
+
+    public static float distance(float lat1, float lng1, float lat2, float lng2) {
+        double earthRadius = 6371000; //meters
+        double dLat = Math.toRadians(lat2-lat1);
+        double dLng = Math.toRadians(lng2-lng1);
+        double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
+                        Math.sin(dLng/2) * Math.sin(dLng/2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+        return (float) (earthRadius * c);
     }
 
     @Data
@@ -72,7 +251,7 @@ public class Speedtest {
         private int downloadLength;
         private int uploadLength;
 
-        public Config() throws ParserConfigurationException, IOException, SAXException {
+        private Config() throws ParserConfigurationException, IOException, SAXException {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
             Document doc = db.parse(new URL(SPEEDTEST_CONFIG).openStream());
@@ -100,5 +279,15 @@ public class Speedtest {
             this.downloadLength = Integer.valueOf(upload.getNamedItem("testlength").getNodeValue());
             this.uploadLength = Integer.valueOf(upload.getNamedItem("testlength").getNodeValue());
         }
+    }
+
+    @Data
+    @AllArgsConstructor
+    public class Server {
+        private String id;
+        private String url;
+
+        private float latitude;
+        private float longitude;
     }
 }

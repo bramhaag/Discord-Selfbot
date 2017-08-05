@@ -23,7 +23,7 @@ import me.bramhaag.bcf.BCF;
 import me.bramhaag.discordselfbot.commands.admin.CommandEvaluate;
 import me.bramhaag.discordselfbot.commands.admin.CommandPing;
 import me.bramhaag.discordselfbot.commands.admin.CommandPrune;
-import me.bramhaag.discordselfbot.commands.admin.CommandSpeedtest;
+import me.bramhaag.discordselfbot.commands.util.CommandSpeedtest;
 import me.bramhaag.discordselfbot.commands.admin.CommandVersion;
 import me.bramhaag.discordselfbot.commands.fun.CommandEmoji;
 import me.bramhaag.discordselfbot.commands.fun.CommandMock;
@@ -32,6 +32,8 @@ import me.bramhaag.discordselfbot.commands.fun.CommandScreeching;
 import me.bramhaag.discordselfbot.commands.fun.CommandThinking;
 import me.bramhaag.discordselfbot.commands.fun.CommandTriggered;
 import me.bramhaag.discordselfbot.commands.fun.CommandReact;
+import me.bramhaag.discordselfbot.commands.util.CommandQuote;
+import me.bramhaag.discordselfbot.commands.util.CommandStreaming;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
@@ -58,7 +60,7 @@ public class Bot {
     Bot(@NonNull String token) throws IOException, LoginException, InterruptedException, RateLimitedException {
         //extractResources();
 
-        this.jda = new JDABuilder(AccountType.CLIENT).setToken(token).setAutoReconnect(true).setIdle(true).buildBlocking();
+        jda = new JDABuilder(AccountType.CLIENT).setToken(token).setAutoReconnect(true).setIdle(true).buildBlocking();
         new BCF(jda)
                 .setPrefix("::")
                 .register(new CommandEvaluate(),
@@ -72,7 +74,9 @@ public class Bot {
                         new CommandRetarded(),
                         new CommandMock(),
                         new CommandEmoji(),
-                        new CommandThinking());
+                        new CommandThinking(),
+                        new CommandQuote(),
+                        new CommandStreaming());
     }
 
     private void extractResources() throws IOException {

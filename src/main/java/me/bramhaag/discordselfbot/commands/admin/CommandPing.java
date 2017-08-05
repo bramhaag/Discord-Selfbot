@@ -39,7 +39,7 @@ public class CommandPing {
             context.getMessage().editMessage(
                     EmbedUtil.addDefaults(new EmbedBuilder().setTitle(Constants.PONG_EMOTE + " Pong!", null)
                             .addField("Response time (Bot)", stopwatch.elapsed(TimeUnit.MILLISECONDS) + " ms", true)
-                            .addField("Response time (API)", context.getJDA().getPing() + " ms", true), "Ping", true).build()
+                            .addField("Response time (API)", context.getJda().getPing() + " ms", true), "Ping", true).build()
             ).queue(embed -> embed.delete().queueAfter(Constants.REMOVE_TIME_LONG, TimeUnit.SECONDS));
         });
     }
