@@ -1,20 +1,14 @@
+plugins {
+    id 'com.github.johnrengelman.shadow' version '2.0.1'
+    id 'java'
+}
+
 group 'me.bramhaag'
 version '0.0.2-SNAPSHOT'
 
-apply plugin: 'java'
-apply plugin: 'com.github.johnrengelman.shadow'
-
-sourceCompatibility = 1.8
+sourceCompatibility = JavaVersion.VERSION_1_9
+targetCompatibility = sourceCompatibility
 compileJava.options.encoding = 'UTF-8'
-
-buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.4'
-    }
-}
 
 repositories {
     mavenCentral()
@@ -23,31 +17,26 @@ repositories {
 }
 
 dependencies {
-    compile 'net.dv8tion:JDA:3.2.0_235'
+    compile 'net.dv8tion:JDA:3.3.1_276'
     compile 'com.google.guava:guava:21.0'
     compile 'com.jcabi:jcabi-manifests:1.1'
     compile 'org.reflections:reflections:0.9.11'
 
     compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.3'
 
-    compile 'me.bramhaag:bcf:0.2.3'
+    compile 'me.bramhaag:bcf:0.2.4'
 
     compileOnly 'org.jetbrains:annotations:15.0'
-    compileOnly 'org.projectlombok:lombok:1.16.14'
 }
 
-jar {
-    manifest {
-        attributes(
-                'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
-                'Main-Class': 'me.bramhaag.discordselfbot.Main',
-                'Version': version,
-                'Commit': System.getenv('GIT_COMMIT')?.substring(0, 7) ?: 'N/A (Local Build)',
-                'Date': new Date().format("E-MM-yyyy 'at' h:mm a"),
-                'Build': System.getenv('BUILD_NUMBER') ?: 'N/A (Local build)'
-        )
-    }
-}
+jar.manifest.attributes(
+    'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
+    'Main-Class': 'me.bramhaag.discordselfbot.Main',
+    'Version': version,
+    'Commit': System.getenv('GIT_COMMIT')?.substring(0, 7) ?: 'N/A (Local Build)',
+    'Date': new Date().format("E-MM-yyyy 'at' h:mm a"),
+    'Build': System.getenv('BUILD_NUMBER') ?: 'N/A (Local build)'
+)
 
 shadowJar {
     archiveName "${rootProject.name}.jar"

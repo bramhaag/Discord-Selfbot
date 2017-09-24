@@ -25,7 +25,6 @@ import me.bramhaag.discordselfbot.util.EmbedUtil;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;
-import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import javax.script.ScriptEngine;
@@ -44,7 +43,7 @@ public class CommandEvaluate {
         engine = new ScriptEngineManager().getEngineByName("nashorn");
 
         try {
-            engine.eval(String.format("var imports = new JavaImporter(%s);", StringUtils.join(Constants.EVAL_IMPORTS, ',')));
+            engine.eval(String.format("var imports = new JavaImporter(%s);", String.join(",", Constants.EVAL_IMPORTS)));
         } catch (ScriptException e) {
             e.printStackTrace();
         }
@@ -63,7 +62,9 @@ public class CommandEvaluate {
 
         engine.put("user", message.getAuthor());
         engine.put("member", message.getGuild().getMember(message.getAuthor()));
-        engine.put("bot", message.getJDA().getSelfUser());
+        engine.put("self", message.getJDA().getSelfUser());
+
+        message.getJDA().getSelfUser().getMutualGuilds().size();
 
         String input = String.join(" ", args);
         input = input.startsWith("```") && input.endsWith("```") ? input.substring(3, input.length() - 3) : input;

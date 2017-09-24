@@ -17,10 +17,9 @@
 package me.bramhaag.discordselfbot;
 
 import com.google.common.base.Preconditions;
-import lombok.Getter;
-import lombok.NonNull;
 import me.bramhaag.bcf.BCF;
 import me.bramhaag.discordselfbot.commands.admin.CommandEvaluate;
+import me.bramhaag.discordselfbot.commands.admin.CommandJShell;
 import me.bramhaag.discordselfbot.commands.admin.CommandPing;
 import me.bramhaag.discordselfbot.commands.admin.CommandPrune;
 import me.bramhaag.discordselfbot.commands.util.CommandSpeedtest;
@@ -49,7 +48,6 @@ import java.util.jar.JarFile;
 
 public class Bot {
 
-    @Getter
     private JDA jda;
 
     /**
@@ -57,7 +55,7 @@ public class Bot {
      *
      * @param token Bot's token
      */
-    Bot(@NonNull String token) throws IOException, LoginException, InterruptedException, RateLimitedException {
+    Bot(@NotNull String token) throws IOException, LoginException, InterruptedException, RateLimitedException {
         //extractResources();
 
         jda = new JDABuilder(AccountType.CLIENT).setToken(token).setAutoReconnect(true).setIdle(true).buildBlocking();
@@ -76,7 +74,12 @@ public class Bot {
                         new CommandEmoji(),
                         new CommandThinking(),
                         new CommandQuote(),
-                        new CommandStreaming());
+                        new CommandStreaming(),
+                        new CommandJShell());
+    }
+
+    public JDA getJda() {
+        return jda;
     }
 
     private void extractResources() throws IOException {

@@ -19,8 +19,6 @@ package me.bramhaag.discordselfbot.speedtest;
 import com.google.common.base.Charsets;
 import com.google.common.base.Stopwatch;
 import com.google.common.io.CharStreams;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import me.bramhaag.discordselfbot.util.StringUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
@@ -31,6 +29,8 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -132,12 +132,14 @@ public class Speedtest {
         return server;
     }
 
-    public void testDownload(Consumer<Long> callback) throws IOException, SAXException, ParserConfigurationException {
+    public void testDownload(Consumer<Double> callback) throws IOException, SAXException, ParserConfigurationException {
         List<String> urls = new ArrayList<>();
+
+        URL host = new URL(getClosestServer().getUrl());
 
         for(long size : getConfig().getDownloadSizes()) {
             for(int i = 0;  i < getConfig().downloadCount; i++) {
-                urls.add(String.format("%s/random%sx%s.jpg", getClosestServer().getUrl(), size, size));
+                urls.add(String.format("%s://%s/speedtest/random%sx%s.jpg", host.getProtocol(), host.getHost(), size, size));
             }
         }
 
@@ -150,9 +152,18 @@ public class Speedtest {
 
                 try {
                     HttpURLConnection connection = createConnection(url, null, String.valueOf(i));
-                    received = connection.getContentLengthLong();
+                    received += connection.getContentLengthLong();
 
-                    connection.getInputStream();
+                    try(BufferedInputStream bis = new BufferedInputStream(connection.getInputStream())) {
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+                        int read;
+                        byte[] buffer = new byte[1024];
+                        while ((read = bis.read(buffer)) != -1) {
+                            baos.write(buffer, 0, read);
+                        }
+                    }
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -160,7 +171,12 @@ public class Speedtest {
 
             stopwatch.stop();
 
-            callback.accept(received / stopwatch.elapsed(TimeUnit.SECONDS));
+            System.out.println("Received: " + received);
+            System.out.println("Took: " + stopwatch.elapsed(TimeUnit.SECONDS));
+
+            double download = received / stopwatch.elapsed(TimeUnit.SECONDS) * 8.0;
+
+            callback.accept(download / 1000 / 1000);
         }).start();
 
     }
@@ -200,7 +216,7 @@ public class Speedtest {
         System.out.println(u);
         HttpURLConnection connection = (HttpURLConnection) u.openConnection();
 
-        connection.setRequestMethod("POST");
+        connection.setRequestMethod(data == null ? "GET" : "POST");
 
         connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
         connection.setRequestProperty("charset", "utf-8");
@@ -234,7 +250,6 @@ public class Speedtest {
         return (float) (earthRadius * c);
     }
 
-    @Data
     private class Config {
         private NamedNodeMap client;
         private String[] ignoreServers;
@@ -279,15 +294,132 @@ public class Speedtest {
             this.downloadLength = Integer.valueOf(upload.getNamedItem("testlength").getNodeValue());
             this.uploadLength = Integer.valueOf(upload.getNamedItem("testlength").getNodeValue());
         }
+
+        public NamedNodeMap getClient() {
+            return client;
+        }
+
+        public String[] getIgnoreServers() {
+            return ignoreServers;
+        }
+
+        public int[] getDownloadSizes() {
+            return downloadSizes;
+        }
+
+        public int[] getUploadSizes() {
+            return uploadSizes;
+        }
+
+        public int getDownloadCount() {
+            return downloadCount;
+        }
+
+        public int getUploadCount() {
+            return uploadCount;
+        }
+
+        public int getDownloadThread() {
+            return downloadThread;
+        }
+
+        public int getUploadThread() {
+            return uploadThread;
+        }
+
+        public int getDownloadLength() {
+            return downloadLength;
+        }
+
+        public int getUploadLength() {
+            return uploadLength;
+        }
+
+        public void setClient(NamedNodeMap client) {
+            this.client = client;
+        }
+
+        public void setIgnoreServers(String[] ignoreServers) {
+            this.ignoreServers = ignoreServers;
+        }
+
+        public void setDownloadSizes(int[] downloadSizes) {
+            this.downloadSizes = downloadSizes;
+        }
+
+        public void setUploadSizes(int[] uploadSizes) {
+            this.uploadSizes = uploadSizes;
+        }
+
+        public void setDownloadCount(int downloadCount) {
+            this.downloadCount = downloadCount;
+        }
+
+        public void setUploadCount(int uploadCount) {
+            this.uploadCount = uploadCount;
+        }
+
+        public void setDownloadThread(int downloadThread) {
+            this.downloadThread = downloadThread;
+        }
+
+        public void setUploadThread(int uploadThread) {
+            this.uploadThread = uploadThread;
+        }
+
+        public void setDownloadLength(int downloadLength) {
+            this.downloadLength = downloadLength;
+        }
+
+        public void setUploadLength(int uploadLength) {
+            this.uploadLength = uploadLength;
+        }
     }
 
-    @Data
-    @AllArgsConstructor
     public class Server {
         private String id;
         private String url;
 
         private float latitude;
         private float longitude;
+
+        public Server(String id, String url, float latitude, float longitude) {
+            this.id = id;
+            this.url = url;
+            this.latitude = latitude;
+            this.longitude = longitude;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public String getUrl() {
+            return url;
+        }
+
+        public float getLatitude() {
+            return latitude;
+        }
+
+        public float getLongitude() {
+            return longitude;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public void setUrl(String url) {
+            this.url = url;
+        }
+
+        public void setLatitude(float latitude) {
+            this.latitude = latitude;
+        }
+
+        public void setLongitude(float longitude) {
+            this.longitude = longitude;
+        }
     }
 }
