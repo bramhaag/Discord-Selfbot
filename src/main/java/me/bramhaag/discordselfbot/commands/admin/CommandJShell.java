@@ -17,7 +17,6 @@
 package me.bramhaag.discordselfbot.commands.admin;
 
 import com.google.common.base.Stopwatch;
-import jdk.jshell.DeclarationSnippet;
 import jdk.jshell.Diag;
 import jdk.jshell.EvalException;
 import jdk.jshell.JShell;
@@ -27,6 +26,7 @@ import jdk.jshell.UnresolvedReferenceException;
 import me.bramhaag.bcf.CommandContext;
 import me.bramhaag.bcf.annotations.Command;
 import me.bramhaag.bcf.annotations.CommandBase;
+import me.bramhaag.discordselfbot.Bot;
 import me.bramhaag.discordselfbot.util.EmbedUtil;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
@@ -53,8 +53,8 @@ public class CommandJShell {
 
     public CommandJShell() {
         jShell = JShell.builder().build();
-                List.of("java.util.*", "java.io.*", "java.math.*", "java.net.*", "java.util.concurrent.*", "java.util.prefs.*", "java.util.regex.*", "java.util.stream.*")
-                    .stream().map(i -> "import " + i + ";").forEach(i -> jShell.eval(i));
+        Arrays.stream(Bot.getInstance().getConfig().getJavaImports())
+                .map(i -> "import " + i + ";").forEach(i -> jShell.eval(i));
     }
 
     @CommandBase
@@ -121,15 +121,14 @@ public class CommandJShell {
                     }
 
                     output.add(getStacktrace(ex));
-                    return output;
                 } else if (ste.exception() instanceof UnresolvedReferenceException) {
                     UnresolvedReferenceException ex = (UnresolvedReferenceException) ste.exception();
                     jShell.diagnostics(ex.getSnippet()).map(i -> i.getMessage(Locale.getDefault())).forEach(output::add);
-                    return output;
                 } else {
                     output.add("Unexpected execution exception: " + ste.exception());
-                    return output;
                 }
+
+                return output;
             }
         } else {
             if (diagnostics.isEmpty()) {

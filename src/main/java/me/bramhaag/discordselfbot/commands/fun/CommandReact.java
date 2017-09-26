@@ -22,6 +22,7 @@ import me.bramhaag.bcf.annotations.CommandBase;
 import me.bramhaag.bcf.annotations.Optional;
 import net.dv8tion.jda.core.entities.Message;
 
+import java.util.Arrays;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
@@ -31,14 +32,14 @@ public class CommandReact {
     private Character[] regionalIndicators;
 
     public CommandReact() {
-        regionalIndicators = IntStream.rangeClosed((int) '\uDDE6', (int) '\uDDFF')
+        this.regionalIndicators = IntStream.rangeClosed((int) '\uDDE6', (int) '\uDDFF')
                 .mapToObj(i -> (char) i)
                 .toArray(Character[]::new);
     }
 
     @CommandBase
     public void execute(CommandContext context, String text, @Optional String messageId, @Optional String channelId, @Optional String guildId) {
-        guildId = guildId == null ? context.getGuild().getId()   : guildId;
+        guildId = guildId == null ? context.getGuild().getId() : guildId;
         channelId = channelId == null ? context.getChannel().getId() : channelId;
         Message target = messageId == null ?
                 context.getChannel().getHistoryAround(context.getMessage(), 2).complete().getRetrievedHistory().get(1) :
@@ -46,12 +47,9 @@ public class CommandReact {
 
         context.getMessage().delete().queue();
 
-        for(Character c : text.toLowerCase().toCharArray()) {
-            if(!Pattern.matches("[a-zA-Z]", c.toString())) {
-                continue;
-            }
-
-            target.addReaction('\uD83C' + regionalIndicators[(int) c - 'a'].toString()).queue();
-        }
+        text.toLowerCase().chars()
+                .mapToObj(i -> (char) i)
+                .filter(c -> Pattern.matches("[a-zA-Z]", c.toString()))
+                .forEach(c -> target.addReaction('\uD83C' + regionalIndicators[(int) c - 'a'].toString()).queue());
     }
 }

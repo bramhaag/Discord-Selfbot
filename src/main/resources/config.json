@@ -1,4 +1,32 @@
 {
+    "token": "INSERT-TOKEN-HERE",
     "prefix": "::",
-    "imagemagick_path": "magick"
+    "java_imports": [
+        "java.util.*",
+        "java.io.*",
+        "java.math.*",
+        "java.net.*",
+        "java.util.concurrent.*",
+        "java.util.prefs.*",
+        "java.util.regex.*",
+        "java.util.stream.*"
+    ],
+    "javascript_imports": [
+        "java.lang",
+        "java.io",
+        "java.math",
+        "java.util",
+        "java.util.concurrent",
+        "java.time"
+    ],
+    "primary_color": {
+        "r": 85,
+        "g": 140,
+        "b": 255
+    },
+    "error_color": {
+        "r": 255,
+        "g": 80,
+        "b": 75
+    }
 }

@@ -41,6 +41,7 @@ import java.net.URL;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
@@ -112,24 +113,9 @@ public class Speedtest {
         float lat = Float.valueOf(getConfig().getClient().getNamedItem("lat").getNodeValue());
         float lon = Float.valueOf(getConfig().getClient().getNamedItem("lon").getNodeValue());
 
-        float lowestDistance = -1;
-        Server server = null;
-        for(Server s : getServers()) {
-            float distance = distance(s.getLatitude(), s.getLongitude(), lat, lon);
-
-            if(lowestDistance == -1) {
-                server = s;
-                lowestDistance = distance;
-                continue;
-            }
-
-            if(lowestDistance > distance) {
-                server = s;
-                lowestDistance = distance;
-            }
-        }
-
-        return server;
+        return getServers().stream()
+                .min(Comparator.comparing(s-> distance(s.getLatitude(), s.getLongitude(), lat, lon)))
+                .orElse(null);
     }
 
     public void testDownload(Consumer<Double> callback) throws IOException, SAXException, ParserConfigurationException {

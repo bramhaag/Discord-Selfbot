@@ -16,6 +16,7 @@
 
 package me.bramhaag.discordselfbot.util;
 
+import me.bramhaag.discordselfbot.Bot;
 import net.dv8tion.jda.core.EmbedBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -24,6 +25,13 @@ import java.time.ZonedDateTime;
 
 public class EmbedUtil {
 
+    /**
+     * Add default elements to embed
+     * @param builder EmbedBuilder for embed
+     * @param footer footer of embed
+     * @param isSuccessful sets color of embed
+     * @return Embed with default elements
+     */
     @NotNull
     public static EmbedBuilder addDefaults(@NotNull EmbedBuilder builder, @Nullable String footer, @Nullable Boolean isSuccessful) {
         builder.setTimestamp(ZonedDateTime.now());
@@ -32,7 +40,7 @@ public class EmbedUtil {
 
         if(isSuccessful != null) {
             finalFooter += isSuccessful ? Constants.CHECK_EMOTE : Constants.CROSS_EMOTE;
-            builder.setColor(isSuccessful ? Constants.PRIMARY_COLOR : Constants.ERROR_COLOR);
+            builder.setColor(isSuccessful ? Bot.getInstance().getConfig().getPrimaryColor() : Bot.getInstance().getConfig().getErrorColor());
         }
 
         if(footer != null && !footer.isEmpty()) {

@@ -17,13 +17,14 @@
 package me.bramhaag.discordselfbot.util;
 
 import org.apache.commons.codec.binary.Hex;
+import org.jetbrains.annotations.NotNull;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class StringUtil {
 
-    public static String toMD5Hex(String input) throws NoSuchAlgorithmException {
+    public static String toMD5Hex(@NotNull String input) throws NoSuchAlgorithmException {
         MessageDigest md = MessageDigest.getInstance("MD5");
         byte[] hash = md.digest(input.getBytes());
         return new String( Hex.encodeHex(hash));

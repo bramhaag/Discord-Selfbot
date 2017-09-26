@@ -20,6 +20,7 @@ import me.bramhaag.bcf.CommandContext;
 import me.bramhaag.bcf.annotations.Command;
 import me.bramhaag.bcf.annotations.CommandBase;
 import me.bramhaag.bcf.annotations.Optional;
+import me.bramhaag.discordselfbot.Bot;
 import me.bramhaag.discordselfbot.util.Constants;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Message;
@@ -38,7 +39,7 @@ public class CommandQuote {
                 context.getJda().getGuildById(guildId).getTextChannelById(channelId).getHistoryAround(messageId, 1).complete().getRetrievedHistory().get(0);
 
         context.getMessage().editMessage(new EmbedBuilder()
-                .setColor(Constants.PRIMARY_COLOR)
+                .setColor(Bot.getInstance().getConfig().getPrimaryColor())
                 .setDescription(target.getRawContent())
                 .setFooter(target.getAuthor().getName(), target.getAuthor().getEffectiveAvatarUrl())
                 .setTimestamp(ZonedDateTime.now())

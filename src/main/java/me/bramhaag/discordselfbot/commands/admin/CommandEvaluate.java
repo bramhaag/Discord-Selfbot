@@ -20,6 +20,7 @@ import com.google.common.base.Stopwatch;
 import me.bramhaag.bcf.CommandContext;
 import me.bramhaag.bcf.annotations.Command;
 import me.bramhaag.bcf.annotations.CommandBase;
+import me.bramhaag.discordselfbot.Bot;
 import me.bramhaag.discordselfbot.util.Constants;
 import me.bramhaag.discordselfbot.util.EmbedUtil;
 import net.dv8tion.jda.core.EmbedBuilder;
@@ -33,7 +34,7 @@ import javax.script.ScriptException;
 import java.awt.*;
 import java.util.concurrent.TimeUnit;
 
-@Command("evaluate")
+@Command("evaluate|eval")
 public class CommandEvaluate {
 
     @NotNull
@@ -43,7 +44,7 @@ public class CommandEvaluate {
         engine = new ScriptEngineManager().getEngineByName("nashorn");
 
         try {
-            engine.eval(String.format("var imports = new JavaImporter(%s);", String.join(",", Constants.EVAL_IMPORTS)));
+            engine.eval(String.format("var imports = new JavaImporter(%s);", String.join(",", Bot.getInstance().getConfig().getJavascriptImports())));
         } catch (ScriptException e) {
             e.printStackTrace();
         }

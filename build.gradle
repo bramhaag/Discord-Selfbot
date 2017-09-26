@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'me.bramhaag'
-version '0.0.2-SNAPSHOT'
+version '0.0.3-SNAPSHOT'
 
 sourceCompatibility = JavaVersion.VERSION_1_9
 targetCompatibility = sourceCompatibility
@@ -22,8 +22,8 @@ dependencies {
     compile 'com.jcabi:jcabi-manifests:1.1'
     compile 'org.reflections:reflections:0.9.11'
 
-    compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.3'
-
+    compile 'org.apache.httpcomponents:httpclient:4.5.3'
+    compile 'com.moandjiezana.toml:toml4j:0.7.2'
     compile 'me.bramhaag:bcf:0.2.4'
 
     compileOnly 'org.jetbrains:annotations:15.0'

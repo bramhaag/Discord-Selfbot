@@ -17,6 +17,7 @@
 package me.bramhaag.discordselfbot.util;
 
 import net.dv8tion.jda.core.entities.User;
+import org.jetbrains.annotations.NotNull;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -28,7 +29,15 @@ import java.net.URL;
 
 public class ImageUtil {
 
-    public static BufferedImage getAvatar(User user) throws IOException {
+    /**
+     * Get {@code user}'s avatar
+     * @param user user whom's avatar to get
+     * @return {@code user}'s avatar
+     * @throws IOException if an error occurs during reading or when not
+     * able to create required ImageInputStream.
+     */
+    @NotNull
+    public static BufferedImage getAvatar(@NotNull User user) throws IOException {
         String url = user.getAvatarUrl() == null ? user.getDefaultAvatarUrl() : user.getAvatarUrl();
         HttpURLConnection connection = (HttpURLConnection)new URL(url).openConnection();
         connection.setRequestProperty("User-Agent", Constants.USER_AGENT);
@@ -36,7 +45,16 @@ public class ImageUtil {
         return ImageIO.read(connection.getInputStream());
     }
 
-    public static BufferedImage resize(BufferedImage source, int type, int width, int height) {
+    /**
+     * Resize picture
+     * @param source picture to be resized
+     * @param type type of image
+     * @param width width of image
+     * @param height height of image
+     * @return resized image with {@code width}x{@code height} as dimensions
+     */
+    @NotNull
+    public static BufferedImage resize(@NotNull BufferedImage source, int type, int width, int height) {
         Image scaled = source.getScaledInstance(width, height, Image.SCALE_SMOOTH);
         BufferedImage resized = new BufferedImage(width, height, type);
 
@@ -47,7 +65,15 @@ public class ImageUtil {
         return resized;
     }
 
-    public static BufferedImage makeCircular(BufferedImage image, int type, int size) {
+    /**
+     * Create circle from an image
+     * @param image image to create circle of
+     * @param type type of image
+     * @param size radius of circle
+     * @return circular image of {@code image}
+     */
+    @NotNull
+    public static BufferedImage makeCircular(@NotNull BufferedImage image, int type, int size) {
         BufferedImage circle = new BufferedImage(size, size, type);
 
         Graphics2D g = circle.createGraphics();
